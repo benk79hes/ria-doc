@@ -1,0 +1,32 @@
+var canvas = document.createElement("canvas");
+var ctx = canvas.getContext("2D");
+canvas.width = 1366;
+canvas.height = 748;
+document.appendChild(canvas);
+
+// BackgroundImage
+
+var bgReady = false;
+var fondDesktop = new Image();
+fondDesktop.onload = function(){
+    bgReady = true;
+}
+fondDesktop.src = "ressources/images/Web1366Fond.png";
+
+//Prof image par defaut
+
+var rivalImg = false;
+var rivalDefaut = new Image();
+rivalDefaut.onload = function(){
+    rivalImg = true;
+}
+rivalDefaut.src = "ressources/images/old.png";
+
+//SnakeImage par defaut
+
+var snakeImg = false;
+var snakeDefaut = new Image();
+snakeDefaut.onload = function(){
+    snakeImg = true;
+}
+snakeDefaut.src = "ressources/images/SnakeSmall.png";
