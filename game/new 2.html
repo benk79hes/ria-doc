@@ -15,7 +15,8 @@
 <script>
 var canvas = document.getElementById("zone");
 var ctx = canvas.getContext('2d');
-//var pom = canvas.getContext('2d');
+ 
+var timeout = 0; 
  
  // position sur le canvas
  var depX=depY=0;
@@ -24,8 +25,11 @@ var ctx = canvas.getContext('2d');
  
 var largeur = hauteur = 20;
  // départ serpent au milieu du canvas (utilisé ici)
-var x = Math.trunc(canvas.width/2);
-var y = Math.trunc(canvas.height/2);
+var x = Math.trunc(Math.random()*canvas.width/largeur)*largeur;
+var y = Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
+//var x= Math.trunc(Math.random()*canvas.width/largeur)*largeur; ;
+//var y= Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
+
 
 ctx.fillStyle="#F1C40F";
 ctx.fillRect(x, y, largeur, hauteur);
@@ -34,8 +38,8 @@ ctx.fillRect(x, y, largeur, hauteur);
 var pomLarg = pomHaut = 20;
 
 // Position "pomme" aléatoire
-var pomX = Math.trunc(Math.random()*canvas.width/largeur);
-var pomY= Math.trunc(Math.random()*canvas.height/hauteur);
+var pomX= Math.trunc(Math.random()*canvas.width/largeur)*largeur; ;
+var pomY= Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
 
 /*
 // Affichage de la 2pomme"
@@ -45,11 +49,11 @@ pom.fillRect(pomX, pomY, pomLarg, pomHaut);
 
 var trace=[];
 var tailleTrace=1;
-var sautTrace=30;
+var sautTrace=5;
 var tailleMaxTrace=1000; // Cette valeur sera changé plus tard (enfin, à voir)
 
 var hist, compteBoucle = 0;
-var sautBoucle = 10000 ;
+var sautBoucle = 100 ;
 
 window.onload=function() {
 
@@ -60,12 +64,12 @@ window.onload=function() {
 }
 
 function jeu(){
-// code à venir pour le final mais en attendant, déplacement curseur jaune
-x+=depX;  // déplacement horizontal
-y+=depY;  // déplacement vertical
+
+x+=depX*largeur;  // déplacement horizontal
+y+=depY*hauteur;  // déplacement vertical 
 
 // pour faire en sorte de n'avoir que 1 point qui se déplace >> 
-ctx.clearRect(0, 0, canvas.width, canvas.height); 
+ctx.clearRect(largeur, hauteur, canvas.width-40, canvas.height-40); 
  
 ctx.fillStyle="#F1C40F";
 ctx.fillRect(x, y, largeur, hauteur);
@@ -96,21 +100,15 @@ while(trace.length>tailleTrace){
 
 // Il faut gérer la trace lors de la fonction pause car elle disparaît
 
-
-if((compteBoucle++)%100 == 1){
- sautBoucle-- ;
- pomX = Math.trunc(Math.random()*canvas.width/largeur)*largeur;
- pomY= Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
- }
- 
+		
  // Affichage de la 2pomme"
 ctx.beginPath();
 ctx.fillStyle="#FF0000";
 ctx.fillRect(pomX, pomY, pomLarg, pomHaut);
 ctx.closePath();
- 
+		
  // Action sur la "pomme"
- if(x==pomX && y==pomY){
+ if( x==pomX && y==pomY){
  //Gestion du score quand il y aura
  //score+=10 + 2 * ((tailleTrace - tailleInitTrace)/sautTrace); 
  
@@ -125,12 +123,29 @@ ctx.closePath();
  tailleTrace-=sautTrace;
  }
  */
+ //sautBoucle = 10 ;
+ //sautBoucle--;
 }
+else if(timeout++ >1000){
+ timeout = 0 ;
+ pomX = Math.trunc(Math.random()*canvas.width/largeur)*largeur;
+ pomY= Math.trunc(Math.random()*canvas.height/hauteur)*largeur;
+ }
 
+
+
+//////////////////////////////////////////////////////
+ console.log("pomX :", pomX);
+  console.log("x :", x);
+   console.log("pomY :", pomY);
+    console.log("y :", y);
+	///////////////////////////////////////////////
+	
 }
 
 
 function keyboard(evt){
+//var timeoutTemp ;
  switch(evt.keyCode) {
  case 37:
  // touche gauche
