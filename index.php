@@ -20,12 +20,19 @@
 
 		<main>
 			<h1>The game</h1>
-			<p><?= $_SERVER['PHP_SELF'] ?></p>
+			<canvas id="zone" width="700" height="700" style="background-color:#C0C0C0;margin:0 auto;">
+				Désolé, votre navigateur (ou sa version) ne prend pas en charge les "canvas".
+			</canvas>
+			<script src="game/game.js"></script>			
+			
 		</main>
 
 		<?php 
 			include('inc/footer.php');
 		?>
 
+		<script></script>
+
 	</body>
+
 </html>

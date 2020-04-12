@@ -142,29 +142,32 @@ function Game(querySelector)
     var ctx = canvas.getContext('2d');
 
     var intervalID = null;
-    var intervalTime = 150;
     var gridSize = 20
+    var apples = [];
+    var gameGridWidth = canvas.width / gridSize;
+    var gameGridHeight = canvas.height / gridSize;
 
+
+
+
+    var intervalTime = 150;
     var timeout = 0; 
 
     // position sur le canvas
     //var depX = depY = 0;
-    var gameGridWidth = canvas.width / gridSize;
-    var gameGridHeight = canvas.height / gridSize;
 
     var snake = new Snake(Math.trunc(gameGridWidth / 2), Math.trunc(gameGridHeight / 2), 3);
     // départ serpent au milieu du canvas (utilisé ici)
     //var x = Math.trunc(Math.random() * canvas.width / gridSize) * gridSize;
     //var y = Math.trunc(Math.random() * canvas.height / gridSize) * gridSize;
 
-    var apples = [];
     // Position "pomme" aléatoire
     // var pomX = Math.trunc(Math.random() * canvas.width/gridSize) * gridSize; ;
     // var pomY = Math.trunc(Math.random() * canvas.height/gridSize) * gridSize;
 
 
     addApple();
-    function _init() {
+    function init(options) {
         ctx.fillStyle="#F1C40F";
         ctx.fillRect(x, y, gridSize, gridSize);
     }
