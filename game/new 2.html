@@ -13,33 +13,32 @@
  Désolé, votre navigateur (ou sa version) ne prend pas en charge les "canvas".
  </canvas>
 <script>
-var canvas = document.getElementById("zone");
-var ctx = canvas.getContext('2d');
+let canvas = document.getElementById("zone");
+let ctx = canvas.getContext('2d');
  
-var timeout = 0; 
+let timeout = 0; 
  
- // position sur le canvas
- var depX=depY=0;
- var derMouv=1;
- var derMouvStop=0;
+ // Déplacement sur le canvas
+ let depX=depY=0;
+ let derMouv=1;
+ let derMouvStop=0;
  
-var largeur = hauteur = 20;
- // départ serpent au milieu du canvas (utilisé ici)
-var x = Math.trunc(Math.random()*canvas.width/largeur)*largeur;
-var y = Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
-//var x= Math.trunc(Math.random()*canvas.width/largeur)*largeur; ;
-//var y= Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
+let largeur = hauteur = 20;
+    
+ // départ serpent
+let x = Math.trunc(Math.random()*canvas.width/largeur)*largeur;
+let y = Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
 
 
 ctx.fillStyle="#F1C40F";
 ctx.fillRect(x, y, largeur, hauteur);
 
 //taille "pomme"
-var pomLarg = pomHaut = 20;
+let pomLarg = pomHaut = 20;
 
 // Position "pomme" aléatoire
-var pomX= Math.trunc(Math.random()*canvas.width/largeur)*largeur; ;
-var pomY= Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
+let pomX= Math.trunc(Math.random()*canvas.width/largeur)*largeur; ;
+let pomY= Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
 
 /*
 // Affichage de la 2pomme"
@@ -47,29 +46,32 @@ pom.fillStyle="#FF0000";
 pom.fillRect(pomX, pomY, pomLarg, pomHaut);
 */
 
-var trace=[];
-var tailleTrace=1;
-var sautTrace=5;
-var tailleMaxTrace=1000; // Cette valeur sera changé plus tard (enfin, à voir)
+let trace=[];
+let tailleTrace=1;
+let sautTrace=5;
+let tailleMaxTrace=1000; // Cette valeur sera changé plus tard (enfin, à voir)
 
-var hist, compteBoucle = 0;
-var sautBoucle = 100 ;
+let hist, compteBoucle = 0;
+let sautBoucle = 100 ;
+    
+let gameLevel = 5;
 
 window.onload=function() {
 
-	var intervalID = setInterval(jeu,100);  // rafraichissement toutes les 10millisecondes
+	const intervalID = setInterval(jeu,100);  // rafraichissement toutes les 10millisecondes
 
 	document.addEventListener("keydown",keyboard);
-
+    
 }
 
 function jeu(){
-
+    
 x+=depX*largeur;  // déplacement horizontal
 y+=depY*hauteur;  // déplacement vertical 
 
 // pour faire en sorte de n'avoir que 1 point qui se déplace >> 
-ctx.clearRect(largeur, hauteur, canvas.width-40, canvas.height-40); 
+ctx.clearRect(0, 0, canvas.width, canvas.height); 
+
  
 ctx.fillStyle="#F1C40F";
 ctx.fillRect(x, y, largeur, hauteur);
@@ -94,7 +96,7 @@ while(trace.length>tailleTrace){
  trace.shift();
  }
  
- for(var i=0;i<trace.length;i++) {
+ for(let i=0;i<trace.length;i++) {
  ctx.fillRect(trace[i].x,trace[i].y, largeur, hauteur);
  }
 
@@ -126,16 +128,135 @@ ctx.closePath();
  //sautBoucle = 10 ;
  //sautBoucle--;
 }
-else if(timeout++ >1000){
+    // On positionne la pomme ailleurs au bout d'un certain temps
+else if(timeout++ >100){
  timeout = 0 ;
  pomX = Math.trunc(Math.random()*canvas.width/largeur)*largeur;
- pomY= Math.trunc(Math.random()*canvas.height/hauteur)*largeur;
+ pomY= Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
  }
-
+    
+    // Gestion des limites
+    outOFBound(gameLevel);
+    
+    // Qui se mord la queue perd
+    for(let i=1;i<trace.length;i++) {
+            if( trace[0].x == trace[i].x && trace[0].y == trace[i].y && trace.length >1 /*trace[0].x < x <= trace[i].x && x != pomX */)
+                {
+                    alert("Ton fiel venimeux t'a perdu !");
+                }
+    }
 }
 
+    // fonction gérant le serpent qui va en-dehors du cadre
+function outOFBound(gameLevel){
+    switch(gameLevel){
+        
+        // sort d'un côté et rentre de l'autre côté
+        case 0 :
+            if(x > canvas.width)
+            {
+                x = 0;
+                break ;
+            }
+            else if(x < 0)
+            {
+                x = canvas.width ;
+                break ;
+            }
+            else if (y > canvas.height)
+            {
+                y = 0 ;
+                break ;
+            }
+            else if (y < 0)
+            {
+                y = canvas.height ;
+                break ;
+            }
+            break ;
+        
+        // sort et se replace de manière aléatoire en changeant le sens du déplacement du serpent (plus simple à jouer car plus intuitif)
+        case 3 :
+            if(x > canvas.width || x < 0)
+                {
+                    do
+                    {
+                        x = Math.trunc(Math.random()*canvas.width/largeur)*largeur;                        
+                    }while (x == pomX );
+                    
+                    if (depX == 1)
+                    {
+                        depX = -1 ;
+                    }
+                    else
+                        depX = 1;
+                    
+                    break ;
+                }
+                else if (y > canvas.height || y <0)
+                {
+                    do
+                    {
+                        y = Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
+                    }while (y == pomY);
+                    
+                    if (depY ==1 )
+                    {
+                        depY = -1;
+                    }
+                    else
+                        depY = 1;
+                    
+                    break ;
+                }
+ 
+            break ;
+       
+        // sort et se replace de manière aléatoire sans changer le sens du déplacement du serpent (plus difficile à jouer car moins intuitif)
+        case 5 :
+            if(x > canvas.width || y > canvas.height)
+                {
+                    do
+                    {
+                        x = Math.trunc(Math.random()*canvas.width/largeur)*largeur;
+                         y = Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
+                    }while (x == pomX || y == pomY);
+                    break ;
+                }
+                else if (y <0 || x < 0)
+                {
+                    do
+                    {
+                        x = Math.trunc(Math.random()*canvas.width/largeur)*largeur;
+                        y = Math.trunc(Math.random()*canvas.height/hauteur)*hauteur;
 
-function keyboard(evt){
+                    }while (x == pomX || y == pomY);
+                    break ;
+                }
+            break ;
+         
+        // partie perdue si sortie du cadre
+        case 10 :
+            if(x > canvas.width || y > canvas.height || y <0 || x < 0)
+            {
+                alert("Droit dehors, vous avez perdu !");
+                break;
+            }
+            break;
+    }
+}
+
+function endLoser () {
+    for(var i=0;i<trace.length;i++) {
+        if(x == trace[i].x || y == trace[i].y)
+            {
+                alert("Ton fiel venimeux t'a perdu!");
+            }
+    }
+    
+}
+    
+function keyboard(evt) {
 //var timeoutTemp ;
  switch(evt.keyCode) {
  case 37:
