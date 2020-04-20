@@ -7,12 +7,6 @@
 ******************************************************************************/
 
 
-window.onload = function() {
-    var game = new Game('#zone');
-    initKeyboardController(game);
-    game.start();
-}
-
 function Snake(x, y, length)
 {
     /**
@@ -133,9 +127,30 @@ function Apple(x, y)
     this.y = y;
 }
 
+function deepAssign(o1, o2) {
+    for (o in o2) {
+        if (typeof o2[o] === 'object' && typeof o1[o] !== 'undefined') {
+            deepAssign(o1[o], o2[o]);
+        }
+        else {
+            o1[o] = o2[o];
+        }
+    }
+}
 
-function Game(querySelector)
+
+function Game(querySelector, options)
 {
+    let opts = {
+        levelName: 'First level',
+        intervalTime:  200,
+        addObstacleTimeout: 50,
+        obstacles: {
+            'apple': 4,
+            'teacher': 0,
+        }
+    };
+
     //var canvas = document.getElementById("zone");
     var _self = this;
     var canvas = document.querySelector(querySelector);
@@ -143,20 +158,23 @@ function Game(querySelector)
 
     var intervalID = null;
     var gridSize = 20
-    var apples = [];
     var gameGridWidth = canvas.width / gridSize;
     var gameGridHeight = canvas.height / gridSize;
 
 
 
+    var applesEaten;
+    var apples;
+    var timeout; 
+    var snake;
 
-    var intervalTime = 150;
-    var timeout = 0; 
+
+
+    // console.log(opts);
 
     // position sur le canvas
     //var depX = depY = 0;
 
-    var snake = new Snake(Math.trunc(gameGridWidth / 2), Math.trunc(gameGridHeight / 2), 3);
     // départ serpent au milieu du canvas (utilisé ici)
     //var x = Math.trunc(Math.random() * canvas.width / gridSize) * gridSize;
     //var y = Math.trunc(Math.random() * canvas.height / gridSize) * gridSize;
@@ -166,10 +184,14 @@ function Game(querySelector)
     // var pomY = Math.trunc(Math.random() * canvas.height/gridSize) * gridSize;
 
 
-    addApple();
-    function init(options) {
-        ctx.fillStyle="#F1C40F";
-        ctx.fillRect(x, y, gridSize, gridSize);
+    this.init = function(options) {
+        // console.log('init');
+        deepAssign(opts, options);
+        applesEaten = 0;
+        apples = [];
+        timeout = 0; 
+        snake = new Snake(Math.trunc(gameGridWidth / 2), Math.trunc(gameGridHeight / 2), 3);
+        addApple();
     }
 
     function addApple() {
@@ -213,12 +235,32 @@ function Game(querySelector)
         intervalID = setInterval(function() { 
             _self.run();
             _self.draw();
-        }, intervalTime);
+        }, opts.intervalTime);
 
+    };
+
+    this.onGameOver = function(){
+        alert('Game over');
+    };
+
+    this.onPause = function(){
+        alert('Game on pause. Hit space to continue');
+    }
+    
+    this.onWin = function(score){
+        alert('Your score is: ' + score);
     };
 
 
     this.run = function() {
+
+        if (applesEaten >= opts.obstacles.apple) {
+            clearInterval(intervalID);
+            if(this.onWin) {
+                this.onWin(applesEaten);
+            }
+            return;
+        }
         
         /**************************************************************************
         *                                                                         *
@@ -232,7 +274,7 @@ function Game(querySelector)
 
         if (snakeOutOfGrid() || snake.hasCollision()) {
             clearInterval(intervalID);
-            alert('game over');
+            this.onGameOver();
             return;
         }
 
@@ -243,6 +285,7 @@ function Game(querySelector)
 
                 snake.eat();
                 eating = true;
+                applesEaten++;
                 return false;
             }
 
@@ -261,9 +304,9 @@ function Game(querySelector)
 
     function snakeOutOfGrid() {
         return  snake.x < 0 || 
-                snake.x > gameGridWidth || 
+                snake.x >= gameGridWidth || 
                 snake.y < 0 || 
-                snake.y > gameGridHeight;
+                snake.y >= gameGridHeight;
     }
 
     this.draw = function() {
@@ -317,6 +360,7 @@ function Game(querySelector)
         });
 
     };
+    this.init(options);
 
 }
 

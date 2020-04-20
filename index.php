@@ -23,7 +23,14 @@
 			<canvas id="zone" width="700" height="700" style="background-color:#C0C0C0;margin:0 auto;">
 				Désolé, votre navigateur (ou sa version) ne prend pas en charge les "canvas".
 			</canvas>
-			<script src="game/game.js"></script>			
+			<script src="game/game.js"></script>
+			<script>
+				window.onload = function() {
+					var game = new Game('#zone');
+					initKeyboardController(game);
+					game.start();
+				}
+			</script>
 			
 		</main>
 
