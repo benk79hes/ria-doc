@@ -239,8 +239,9 @@ function Game(querySelector, options)
     this.start = function() {
 
         intervalID = setInterval(function() { 
-            _self.run();
-            _self.draw();
+            if(_self.run()) {
+                _self.draw();
+            }
         }, opts.intervalTime);
 
     };
@@ -265,7 +266,7 @@ function Game(querySelector, options)
             if(this.onWin) {
                 this.onWin(applesEaten);
             }
-            return;
+            return false;
         }
         
         /**************************************************************************
@@ -282,7 +283,7 @@ function Game(querySelector, options)
             clearInterval(intervalID);
             console.log(intervalID);
             this.onGameOver();
-            return;
+            return false;
         }
 
         let eating = false;
@@ -307,6 +308,8 @@ function Game(querySelector, options)
             timeout = 0 ;
             addApple();
         }
+
+        return true;
     };
 
     function snakeOutOfGrid() {
