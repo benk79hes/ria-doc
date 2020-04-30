@@ -185,6 +185,7 @@ function Game(querySelector, options)
 
 
     this.init = function(options) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
         // console.log('init');
         deepAssign(opts, options);
         applesEaten = 0;
@@ -220,15 +221,20 @@ function Game(querySelector, options)
         snake.setDirection(3);
     };
 
-    this.pause = function() {
+    this.pauseToggle = function() {
         if (intervalID == null) {
             this.start();
         }
         else {
-            clearInterval(intervalID);
-            intervalID = null;
+            this.pause();
         }
     };
+
+    this.pause = function() {
+        clearInterval(intervalID);
+        this.onPause();
+        intervalID = null;
+    }
 
     this.start = function() {
 
@@ -244,7 +250,7 @@ function Game(querySelector, options)
     };
 
     this.onPause = function(){
-        alert('Game on pause. Hit space to continue');
+        //alert('Game on pause. Hit space to continue');
     }
     
     this.onWin = function(score){
@@ -253,9 +259,9 @@ function Game(querySelector, options)
 
 
     this.run = function() {
-
         if (applesEaten >= opts.obstacles.apple) {
-            clearInterval(intervalID);
+            this.pause();
+
             if(this.onWin) {
                 this.onWin(applesEaten);
             }
@@ -274,6 +280,7 @@ function Game(querySelector, options)
 
         if (snakeOutOfGrid() || snake.hasCollision()) {
             clearInterval(intervalID);
+            console.log(intervalID);
             this.onGameOver();
             return;
         }
@@ -396,7 +403,7 @@ function initKeyboardController(game)
             case 32:
                 // touche espace pour pause ??
                 // Gestion du redémarrage serpent dans la direction où il  allait
-                game.pause();
+                game.pauseToggle();
                 break;
 
         }

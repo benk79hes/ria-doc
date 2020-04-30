@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+
+	<head>
+		<title>Snake It - Home</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="ressources/css/structure.css">
+	</head>
+	
+	<body>
+		<section class="page" data-page="home">
+			<header>
+				<h1>Snake the Teacher</h1>
+			</header>
+			<nav>
+				<ul>
+					<li>
+						<a href="#game" class="main-button">New Game</a>
+					</li>
+					<!-- <li>
+						<a href="#start" class="main-button">Start</a>
+					</li>-->
+					<li>
+						<a href="#help">Help</a>
+					</li>
+					<li>
+						<a href="#tutorial">Tutorial</a>
+					</li>
+					<!-- <li>
+						<a href="#account">Account</a>
+					</li> -->
+				</ul>
+			</nav>
+		</section>
+		
+
+		<section class="page" data-page="score" style="display:none;">
+			<header>
+				<h1>Level completed</h1>
+			</header>
+
+			<p>Congratulations .... </p>
+			<nav>
+				<ul>
+					<li>
+						<a href="#game" class="main-button" id="next-level">Next level</a>
+					</li>
+					<li>
+						<a href="#game" class="main-button">Back</a>
+					</li>
+				</ul>
+			</nav>
+
+		</section>
+		
+
+		<section class="page" data-page="levels" style="display:none;">
+			<header>
+				<h1>Level</h1>
+			</header>
+
+			<nav>
+				<ul>
+					<li>
+						<a href="#home" class="main-button">Home</a>
+					</li>
+				</ul>
+			</nav>
+
+		</section>
+
+
+		<section class="page" data-page="help" style="display:none;">
+			<header>
+				<h1>Help</h1>
+			</header>
+
+			<p>Help text</p>
+			<nav>
+				<ul>
+					<li>
+						<a href="#home" class="main-button">Home</a>
+					</li>
+				</ul>
+			</nav>
+
+		</section>
+
+		<section class="page" data-page="game" style="display:none;">
+
+
+
+			<canvas id="zone" width="700" height="700" style="background-color:#C0C0C0;margin:0 auto; max-width:100%;">
+				Désolé, votre navigateur (ou sa version) ne prend pas en charge les "canvas".
+			</canvas>
+			<nav>
+				<ul>
+					<li>
+						<a href="#" class="main-button">Pause</a>
+					</li>
+					<li>
+						<a href="#home" class="main-button">Home</a>
+					</li>
+				</ul>
+			</nav>
+			
+			<script>
+			</script>
+						
+		</section>
+
+
+		
+
+		<script src="ressources/js/jquery-3.5.0.min.js"></script>
+		<script src="ressources/js/navigation.js"></script>
+		<script src="game/game.js"></script>
+
+		<script src="ressources/js/app.js"></script>
+
+	</body>
+</html>
