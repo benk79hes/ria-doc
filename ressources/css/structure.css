@@ -10,6 +10,7 @@ html {
     height: 100%;
     background-color: #eee;
     padding:0;
+    overscroll-behavior-y: contain;
 }
 
 body {
@@ -20,7 +21,7 @@ body {
     font-family:'Indie Flower', cursive, Tahoma, Arial, "Sans-Serif";
     margin: 0;
     display: flex;
-
+    overscroll-behavior-y: contain;
 }
 
 section.page {

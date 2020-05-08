@@ -1,8 +1,9 @@
 {
   "name": "Snake the Teacher",
+  "short_name": "SnakeTheTeacher",
   "theme_color": "#2196f3",
   "background_color": "#2196f3",
-  "display": "fullscreen",
+  "display": "standalone",
   "Scope": "/",
   "start_url": "/",
   "icons": [
