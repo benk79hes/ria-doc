@@ -79,3 +79,10 @@ $('#next-level').click(function(e){
     game.init(gameLevels[currLevel]);
     navigation.go('game');
 });
+
+$('#replay-level').click(function(e){
+    e.preventDefault();
+
+    game.init(gameLevels[currLevel]);
+    navigation.go('game');
+});
