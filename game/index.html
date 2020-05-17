@@ -11,6 +11,75 @@
         <canvas id="zone" width="700" height="700" style="background-color:#C0C0C0;margin:0 auto;">
             Désolé, votre navigateur (ou sa version) ne prend pas en charge les "canvas".
         </canvas>
+        <music>
+            <audio
+                id="music1"
+                autoplay = "true"
+                src="D:/Perso/Chant stage/music_origine.mp3" preload="auto">              
+            </audio>
+            <audio
+                id="music2"
+                controls
+                autoplay = "true"
+                src="D:\Perso\Chant stage\music.mp3" preload="auto">          
+            </audio>
+        </music>
         <script src="game.js"></script>
+        <script>
+
+            var gameLevels = [
+                {
+                    levelName: 'First level',
+                    intervalTime:  300,
+                    addObstacleTimeout: 500,
+                    IdPlayer : 'music1',
+                    obstacles: {
+                        'apple': 1,
+                        'teacher': 0,
+                    },
+                },
+                {
+                    levelName: 'Second level',
+                    IdPlayer : 'music2',
+                    intervalTime:  280,
+                    addObstacleTimeout: 500,
+                    obstacles: {
+                        'apple': 2,
+                        'teacher': 0,
+                    }
+                },
+                {
+                    levelName: 'Third level',
+                    intervalTime:  200,
+                    addObstacleTimeout: 50,
+                    obstacles: {
+                        'apple': 6,
+                        'teacher': 0,
+                    }
+                },
+    
+            ];
+
+            let currLevel = 0;
+            let game;
+
+            window.onload = function() {
+                let game = new Game('#zone', gameLevels[0]);
+                initKeyboardController(game);
+                
+                game.onWin = function() {
+                    currLevel++;
+                    if (currLevel >= gameLevels.length) {
+                        alert('You won !');
+                    }
+
+                    game.init(gameLevels[currLevel])
+                    game.start();
+                };
+
+                game.start();
+            }
+
+        </script>
     </body>
 </html>
