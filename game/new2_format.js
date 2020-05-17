@@ -498,7 +498,18 @@ console.log("snake.x = " + snake.x);
     }
     
 
-    /**************************** Fonction Ajout Apple ***************************/    
+    /**************************** Fonction Ajout Apple ***************************/
+ /*    addApple( function (game) { 
+        
+        let coordonnateApple = placeApple();
+        
+        let apple = new Apple(coordonnateApple[0], coordonnateApple[1], snake, canvas, date);;
+ 
+         apples.push(apple);
+
+     }, 200);
+    
+ */   
     function addApple(game) {
         
         let coordonnateApple = placeApple();
@@ -510,6 +521,7 @@ console.log("snake.x = " + snake.x);
     }
     
      
+    
     this.up = function() {
         snake.setDirection(0);
     };
@@ -543,6 +555,10 @@ console.log("snake.x = " + snake.x);
             _self.draw();
         }, intervalTime);
 
+/*        setIntervalApple( function () {
+            apples[apples.length-1].moveApple();
+        }, 1000);
+*/
     };
     
     this.run = function() {

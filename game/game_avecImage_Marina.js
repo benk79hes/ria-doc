@@ -8,7 +8,7 @@
 
 
 window.onload = function() {
-    let game = new Game('#zone');
+    var game = new Game('#zone');
     initKeyboardController(game);
     game.start();
 }
@@ -34,11 +34,11 @@ function Snake(x, y, length)
      * 2: bas
      * 3: gauche
      */
-    let direction = 0; 
+    var direction = 0; 
     
-    let tailleTrace = this.trace.length;
-    let sautTrace = 2;
-    let tailleMaxTrace = 1000; // Cette valeur sera changé plus tard (enfin, à voir)
+    var tailleTrace = this.trace.length;
+    var sautTrace = 2;
+    var tailleMaxTrace = 1000; // Cette valeur sera changé plus tard (enfin, à voir)
 
 
     this.setDirection = function(dir) {
@@ -59,7 +59,7 @@ function Snake(x, y, length)
     }
 
     this.move = function(){
-        let depX, depY;
+        var depX, depY;
         
         switch (direction) {
             case 0:
@@ -137,92 +137,50 @@ function Apple(x, y)
 function Game(querySelector)
 {
     //var canvas = document.getElementById("zone");
-    let _self = this;
-    let canvas = document.querySelector(querySelector);
-    let ctx = canvas.getContext('2d');
+    var _self = this;
+    var canvas = document.querySelector(querySelector);
+    var ctx = canvas.getContext('2d');
 
-    let intervalID = null;
-    let intervalTime = 150;
-    let gridSize = 20
+    var intervalID = null;
+    var gridSize = 20
+    var apples = [];
+    var gameGridWidth = canvas.width / gridSize;
+    var gameGridHeight = canvas.height / gridSize;
 
-    let timeout = 0;
-    let gameTimeout = 0;
+
+
+
+    var intervalTime = 150;
+    var timeout = 0; 
 
     // position sur le canvas
     //var depX = depY = 0;
-    let gameGridWidth = canvas.width / gridSize;
-    let gameGridHeight = canvas.height / gridSize;
 
-    let snake = new Snake(Math.trunc(gameGridWidth / 2), Math.trunc(gameGridHeight / 2), 3);
+    var snake = new Snake(Math.trunc(gameGridWidth / 2), Math.trunc(gameGridHeight / 2), 3);
     // départ serpent au milieu du canvas (utilisé ici)
     //var x = Math.trunc(Math.random() * canvas.width / gridSize) * gridSize;
     //var y = Math.trunc(Math.random() * canvas.height / gridSize) * gridSize;
 
-    let apples = [];
     // Position "pomme" aléatoire
     // var pomX = Math.trunc(Math.random() * canvas.width/gridSize) * gridSize; ;
     // var pomY = Math.trunc(Math.random() * canvas.height/gridSize) * gridSize;
 
 
     addApple();
-    function _init() {
+    function init(options) {
         ctx.fillStyle="#F1C40F";
         ctx.fillRect(x, y, gridSize, gridSize);
     }
-    
-    function placeApple () {
-        
+
+    function addApple() {
         let randomX = Math.round(Math.random() * gameGridWidth);
         let randomY = Math.round(Math.random() * gameGridHeight);
-        const coordanteApple = [randomX,randomY];
-        let test1 = false ;
-        let test2 = false ;
-        
-        while (test1 == false && test2 == false) {
-            
-            if (randomX != snake.x && randomY != snake.y) {           
-                test1 = true ;
-            }
 
-            for (let j=1; j < snake.trace.length; j++) {
-                if ( (randomX != snake.trace[j].x && randomY != snake.trace[j].y)) {                
-                    test2 = true ;               
-                } 
-            }
-            randomX = Math.round(Math.random() * gameGridWidth);
-            randomY = Math.round(Math.random() * gameGridHeight);
-        }
-        
-        return coordanteApple;
-    }
-    
-    function addApple() {
-        
-        let coordonnateApple = placeApple();
-        
-        let apple = new Apple(coordonnateApple[0], coordonnateApple[1]);
-        
+        let apple = new Apple(randomX, randomY);
         apples.push(apple);
     }
 
-    function moveApple (end, timeout, apples, eating) {
-        let coordonnateApple = placeApple();
-        let timer = 50 ;
-        
-        do {
-            ctx.beginPath();
-            ctx.fillStyle="#FFFFFF";
-            ctx.fillRect(apples[apples.length].x * gridSize, apples[apples.length].y * gridSize, gridSize, gridSize);
-            ctx.closePath();
-        } while (timeout > end)
-        
-        if (eating) {
-            return ;
-        }
-        
-        apples.pop();
-        addApple();
-    }
+
 
     this.up = function() {
         snake.setDirection(0);
@@ -294,21 +252,8 @@ function Game(querySelector)
         if (eating) {
             setTimeout(addApple, 1000);
         }
-        
- /*       if(timeout++ >150){
-            if(timeout %4 == 0 ) {
-                apple;
-            }
 
-         }
-*/
-            // On positionne la pomme ailleurs au bout d'un certain temps
-        if(timeout++ > 150){
-            moveApple (200, timeout, apples, eating);
-            timeout = 0 ;            
-         }
-        
-        if (timeout++ > 10000) {
+        if (timeout++ > 1000) {
             timeout = 0 ;
             addApple();
         }
@@ -316,9 +261,9 @@ function Game(querySelector)
 
     function snakeOutOfGrid() {
         return  snake.x < 0 || 
-                snake.x == gameGridWidth || 
+                snake.x > gameGridWidth || 
                 snake.y < 0 || 
-                snake.y == gameGridHeight;
+                snake.y > gameGridHeight;
     }
 
     this.draw = function() {
@@ -340,6 +285,12 @@ function Game(querySelector)
         ctx.fillRect(snake.x * gridSize, 
                      snake.y * gridSize, 
                      gridSize, gridSize);
+        var imgSnake = new Image();
+        imgSnake.onload = function(){
+            ctx.drawImage(imgSnake, snake.x * gridSize, snake.y * gridSize);
+        }
+        imgSnake.src = 'Images/fruit.jpg';
+        
         ctx.closePath();
 
         // Queue
@@ -354,6 +305,9 @@ function Game(querySelector)
         ctx.closePath();
 
 
+        // Il faut gérer la trace lors de la fonction pause car elle disparaît
+
+
 
         /**
          * Dessiner la pomme 
@@ -365,12 +319,19 @@ function Game(querySelector)
             ctx.beginPath();
             ctx.fillStyle="#FF0000";
             ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
+             var imgProf = new Image();
+        imgProf.onload = function(){
+            ctx.drawImage(imgProf, apple.x * gridSize, apple.y * gridSize);
+        }
+        imgProf.src = 'Images/teacher.png';
             ctx.closePath();
         });
 
     };
 
 }
+
+
 
 
 function initKeyboardController(game)
