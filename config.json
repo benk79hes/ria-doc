@@ -1,0 +1,59 @@
+{
+     "gameLevels" : [
+
+    {
+
+        "levelName": "First level",
+
+        "intervalTime":  300,
+
+        "addObstacleTimeout": 50,
+
+        "obstacles": {
+
+            "apple": 1,
+
+            "teacher": 0
+
+        }
+
+    },
+
+    {
+
+        "levelName": "Second level",
+
+        "intervalTime":  280,
+
+        "addObstacleTimeout": 50,
+
+        "obstacles": {
+
+            "apple": 2,
+
+            "teacher": 0
+
+        }
+
+    },
+
+    {
+
+        "levelName": "First level",
+
+        "intervalTime":  200,
+
+        "addObstacleTimeout": 50,
+
+        "obstacles": {
+
+            "apple": 6,
+
+            "teacher": 0
+
+        }
+
+    }
+
+]
+}
