@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Jeu du serpent</title>
+    </head>
+    <body>
+        <!-- Notre canvas -->
+        <canvas id="zone" width="700" height="700" style="background-color:#C0C0C0;margin:0 auto;">
+            Désolé, votre navigateur (ou sa version) ne prend pas en charge les "canvas".
+        </canvas>
+        <script src="game.js"></script>
+        <script>
+
+            var gameLevels = [
+                {
+                    levelName: 'First level',
+                    intervalTime:  300,
+                    addObstacleTimeout: 50,
+                    obstacles: {
+                        'apple': 2,
+                        'teacher': 0,
+                    }
+                },
+                {
+                    levelName: 'Second level',
+                    intervalTime:  280,
+                    addObstacleTimeout: 50,
+                    obstacles: {
+                        'apple': 2,
+                        'teacher': 0,
+                    }
+                },
+                {
+                    levelName: 'First level',
+                    intervalTime:  200,
+                    addObstacleTimeout: 50,
+                    obstacles: {
+                        'apple': 6,
+                        'teacher': 0,
+                    }
+                },
+            ];
+
+            let currLevel = 0;
+            let game;
+
+            window.onload = function() {
+                let game = new Game('#zone', gameLevels[0]);
+                initKeyboardController(game);
+
+                game.onWin = function() {
+                    currLevel++;
+                    if (currLevel >= gameLevels.length) {
+                        alert('You won !');
+                    }
+
+                    game.init(gameLevels[currLevel])
+                    game.start();
+                };
+
+                game.start();
+            }
+
+        </script>
+    </body>
+</html>

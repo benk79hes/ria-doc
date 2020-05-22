@@ -1,37 +1,180 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 	<head>
-		<title>HES-SO Valais/Wallis Snake game</title>
+		<title>Snake It - Home</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!-- <link rel="stylesheet" href="ressources/css/style.css">-->
+		<link rel="stylesheet" href="ressources/css/structure.css">
+		<script>
+			if ('serviceWorker' in navigator) {
+				window.addEventListener(
+					'load', 
+					function() {
+						navigator.serviceWorker.register('/service-worker.js').then(
+							function(registration) {
+							// Registration was successful
+								console.log(
+									'ServiceWorker registration successful with scope: ', 
+									registration.scope);
+							}, 
+							function(err) {
+								// registration failed :(
+								console.log('ServiceWorker registration failed: ', err);
+							}
+						);
+					});
+			}
+		</script>
+		<link rel="manifest" href="/manifest.json">
 	</head>
 	
 	<body>
-
-		<header>
-			<h1>The game</h1>
+		<section class="page" data-page="home">
+			<header>
+				<h1>Snake the Teacher</h1>
+			</header>
 			<nav>
-				<!-- Hamburger -->
 				<ul>
-					<li class="active">
-						<a href="index.html">The game</a>
+					<li>
+						<a href="#game" class="main-button">Play</a>
 					</li>
 					<li>
-						<a href="project/index.html">The project</a>
+						<a href="#hall-of-fame">Hall of Fame</a>
+					</li>
+					<li>
+						<a href="#help">Help</a>
+					</li>
+					<li>
+						<a href="#tutorial">Tutorial</a>
+					</li>
+					<li>
+						<a href="#credits">Credits</a>
 					</li>
 				</ul>
 			</nav>
-		</header>
+		</section>
+		
 
-		<main>
-			<p>Le jeu viendra ici</p>
-		</main>
+		<section class="page" data-page="score" style="display:none;">
+			<header>
+				<h1>Level completed</h1>
+			</header>
+			<p>Congratulations .... </p>
+			<nav>
+				<ul>
+					<li>
+						<a href="#game" class="main-button" id="next-level">Next level</a>
+					</li>
+					<li>
+						<a href="#game" id="replay-level">Replay</a>
+					</li>
+					<li>
+						<a href="#home">Home</a>
+					</li>
+				</ul>
+			</nav>
+		</section>
+		
 
-		<footer>
-			<img id="logo" src="project/ressources/images/logo.png">
-		</footer>
+		<section class="page" data-page="pause" style="display:none;">
+			<header>
+				<h1>Game on Pause</h1>
+			</header>
+			<nav>
+				<ul>
+					<li>
+						<a href="#game" class="main-button">Continue</a>
+					</li>
+					<li>
+						<a href="#home">Home</a>
+					</li>
+				</ul>
+			</nav>
+		</section>
+
+
+		<section class="page" data-page="hall-of-fame" style="display:none;">
+			<header>
+				<h1>Hall of Fame</h1>
+			</header>
+			<p>List of top 10</p>
+			<nav>
+				<ul>
+					<li>
+						<a href="#home" class="main-button">Home</a>
+					</li>
+				</ul>
+			</nav>
+		</section>
+
+
+		<section class="page" data-page="help" style="display:none;">
+			<header>
+				<h1>Help</h1>
+			</header>
+			<p>Help text</p>
+			<nav>
+				<ul>
+					<li>
+						<a href="#home" class="main-button">Home</a>
+					</li>
+				</ul>
+			</nav>
+		</section>
+
+
+		<section class="page" data-page="credits" style="display:none;">
+			<header>
+				<h1>Credits</h1>
+			</header>
+			<p>
+				This game has been realized in the context of HES-SO Valais/Wallis during the course 
+				Rich Internet Applications (RIA).
+			</p>
+			<p>
+				Following students where involved in the project for its development:
+			</p>
+			<ul>
+				<li>Marina Spildenner</li>
+				<li>Matthieu Roux</li>
+				<li>Benjamin Keller</li>
+			</ul>
+			<nav>
+				<ul>
+					<li>
+						<a href="#home" class="main-button">Home</a>
+					</li>
+				</ul>
+			</nav>
+		</section>
+
+
+
+		<section class="page" data-page="game" style="display:none;">
+			<canvas id="zone" width="700" height="700" style="background-color:#C0C0C0;margin:0 auto; max-width:100%;">
+				Désolé, votre navigateur (ou sa version) ne prend pas en charge les "canvas".
+			</canvas>
+			<nav>
+				<ul>
+					<li>
+						<a href="#pause" class="main-button">Pause</a>
+					</li>
+					<li>
+						<a href="#home">Home</a>
+					</li>
+				</ul>
+			</nav>
+		</section>
+
+
+		
+
+		<script src="ressources/js/jquery-3.5.0.min.js"></script>
+		<script src="ressources/js/navigation.js"></script>
+		<script src="game/game.js"></script>
+
+		<script src="ressources/js/app.js"></script>
 
 	</body>
 </html>

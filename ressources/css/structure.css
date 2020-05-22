@@ -1,0 +1,111 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    background-color: #eee;
+    padding:0;
+    overscroll-behavior-y: contain;
+}
+
+body {
+    min-height: 100% !important;
+    background-color: #B3E6EA;
+    padding: 0;
+    position: relative;
+    font-family:'Indie Flower', cursive, Tahoma, Arial, "Sans-Serif";
+    margin: 0;
+    display: flex;
+    overscroll-behavior-y: contain;
+}
+
+section.page {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+
+
+
+header {
+    flex-basis: 40%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+
+h1 {
+    font-family:'Indie Flower', cursive, Tahoma, Arial, "Sans-Serif";
+    text-align: center;
+    font-size: 4em;
+}
+
+p {
+    width: 60%;
+    margin: 0 auto 2em auto
+}
+
+nav {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+nav ul {
+    align-self: center;
+    padding: 0;
+    margin: 0;
+}
+
+nav li {
+    list-style-type: none;
+    margin:2em;
+}
+
+nav li a{
+    display: block;
+    margin:0;
+    text-decoration: none;
+    padding: 8px 25px;
+    border:0 solid transparent;
+    font-size: 1.5rem;
+    color: #333;
+    background-color: #9CC3F1;
+}
+
+nav li a.main-button{
+    background-color: #FAC885;
+}
+
+#main-menu .active a { 
+    background-color: #E00371;
+    
+}
+
+body > footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+body > footer li {
+    list-style-type: none;
+}
+
+body > footer a {
+    color: #00A5E3;
+    text-decoration: none;
+}
+
+body > footer a:hover {
+    color: #E00371;
+    text-decoration: none;
+}
+
