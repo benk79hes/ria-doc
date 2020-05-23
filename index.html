@@ -7,19 +7,26 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="ressources/css/structure.css">
 		<script>
-		if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-      // Registration was successful
-      console.log('ServiceWorker registration successful with scope: ', registration.scope);
-    }, function(err) {
-      // registration failed :(
-      console.log('ServiceWorker registration failed: ', err);
-    });
-  });
-}
-</script>
-<link rel="manifest" href="/manifest.json">
+			if ('serviceWorker' in navigator) {
+				window.addEventListener(
+					'load', 
+					function() {
+						navigator.serviceWorker.register('/service-worker.js').then(
+							function(registration) {
+							// Registration was successful
+								console.log(
+									'ServiceWorker registration successful with scope: ', 
+									registration.scope);
+							}, 
+							function(err) {
+								// registration failed :(
+								console.log('ServiceWorker registration failed: ', err);
+							}
+						);
+					});
+			}
+		</script>
+		<link rel="manifest" href="/manifest.json">
 	</head>
 	
 	<body>
@@ -30,20 +37,20 @@
 			<nav>
 				<ul>
 					<li>
-						<a href="#game" class="main-button">New Game</a>
+						<a href="#game" class="main-button">Play</a>
 					</li>
-					<!-- <li>
-						<a href="#start" class="main-button">Start</a>
-					</li>-->
+					<li>
+						<a href="#hall-of-fame">Hall of Fame</a>
+					</li>
 					<li>
 						<a href="#help">Help</a>
 					</li>
 					<li>
 						<a href="#tutorial">Tutorial</a>
 					</li>
-					<!-- <li>
-						<a href="#account">Account</a>
-					</li> -->
+					<li>
+						<a href="#credits">Credits</a>
+					</li>
 				</ul>
 			</nav>
 		</section>
@@ -53,7 +60,6 @@
 			<header>
 				<h1>Level completed</h1>
 			</header>
-
 			<p>Congratulations .... </p>
 			<nav>
 				<ul>
@@ -61,19 +67,38 @@
 						<a href="#game" class="main-button" id="next-level">Next level</a>
 					</li>
 					<li>
-						<a href="#game" class="main-button">Back</a>
+						<a href="#game" id="replay-level">Replay</a>
+					</li>
+					<li>
+						<a href="#home">Home</a>
 					</li>
 				</ul>
 			</nav>
-
 		</section>
 		
 
-		<section class="page" data-page="levels" style="display:none;">
+		<section class="page" data-page="pause" style="display:none;">
 			<header>
-				<h1>Level</h1>
+				<h1>Game on Pause</h1>
 			</header>
+			<nav>
+				<ul>
+					<li>
+						<a href="#game" class="main-button">Continue</a>
+					</li>
+					<li>
+						<a href="#home">Home</a>
+					</li>
+				</ul>
+			</nav>
+		</section>
 
+
+		<section class="page" data-page="hall-of-fame" style="display:none;">
+			<header>
+				<h1>Hall of Fame</h1>
+			</header>
+			<p>List of top 10</p>
 			<nav>
 				<ul>
 					<li>
@@ -81,7 +106,6 @@
 					</li>
 				</ul>
 			</nav>
-
 		</section>
 
 
@@ -89,7 +113,6 @@
 			<header>
 				<h1>Help</h1>
 			</header>
-
 			<p>Help text</p>
 			<nav>
 				<ul>
@@ -98,10 +121,9 @@
 					</li>
 				</ul>
 			</nav>
-
 		</section>
 
-        <section class="page" data-page="tutorial" style="display:none;">
+    <section class="page" data-page="tutorial" style="display:none;">
 			<header>
 				<h1>Tutorial</h1>
 			</header>
@@ -113,7 +135,34 @@
                 Your browser does not support HTML video.
                 </video>
             </p>
-			<nav>
+
+
+      <nav>
+				<ul>
+					<li>
+						<a href="#home" class="main-button">Home</a>
+					</li>
+				</ul>
+			</nav>
+    </section>
+		<section class="page" data-page="credits" style="display:none;">
+			<header>
+				<h1>Credits</h1>
+			</header>
+			<p>
+				This game has been realized in the context of HES-SO Valais/Wallis during the course 
+				Rich Internet Applications (RIA).
+			</p>
+			<p>
+				Following students where involved in the project for its development:
+			</p>
+			<ul>
+				<li>Marina Spildenner</li>
+				<li>Matthieu Roux</li>
+				<li>Benjamin Keller</li>
+			</ul>
+
+      <nav>
 				<ul>
 					<li>
 						<a href="#home" class="main-button">Home</a>
@@ -126,23 +175,20 @@
 		<section class="page" data-page="game" style="display:none;">
 
 
+		<section class="page" data-page="game" style="display:none;">
 			<canvas id="zone" width="700" height="700" style="background-color:#C0C0C0;margin:0 auto; max-width:100%;">
 				Désolé, votre navigateur (ou sa version) ne prend pas en charge les "canvas".
 			</canvas>
 			<nav>
 				<ul>
 					<li>
-						<a href="#" class="main-button">Pause</a>
+						<a href="#pause" class="main-button">Pause</a>
 					</li>
 					<li>
-						<a href="#home" class="main-button">Home</a>
+						<a href="#home">Home</a>
 					</li>
 				</ul>
 			</nav>
-			
-			<script>
-			</script>
-						
 		</section>
 
 
