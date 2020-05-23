@@ -109,3 +109,7 @@ body > footer a:hover {
     text-decoration: none;
 }
 
+video {
+    max-width:100%;
+    display: inline-block;
+}
