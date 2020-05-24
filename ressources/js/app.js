@@ -73,19 +73,19 @@ async function initApp()
     /**
      * Gestion du drag and drop
      */
-    $('#avatar-form').on('dragover dragenter', function(e){
+    $('#avatar-control').on('dragover dragenter', function(e){
         e.preventDefault();
         e.stopPropagation();
         $(this).addClass('is-dragover');
     });
 
-    $('#avatar-form').on('dragleave dragend drop', function(e){
+    $('#avatar-control').on('dragleave dragend drop', function(e){
         e.preventDefault();
         e.stopPropagation();
         $(this).removeClass('is-dragover');
     });
 
-    $('#avatar-form').on('drop', function(e){
+    $('#avatar-control').on('drop', function(e){
         files = e.originalEvent.dataTransfer.files;
         document.getElementById('avatar-input').files = files;
     });

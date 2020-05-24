@@ -118,11 +118,7 @@ video {
 }
 
 
-/*
-To review
-*/
-
-#avatar-form > label {
+#avatar-control {
     font-size: 1.25rem;
     position: relative;
     padding: 100px 20px;
@@ -132,10 +128,10 @@ To review
     outline-offset: -10px;
 }
 
-#avatar-form.is-dragover > label {
+#avatar-control.is-dragover {
     background-color: grey;
 }
 
-#avatar-input {
+#avatar-control input {
     display:none;
 }

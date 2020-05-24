@@ -178,16 +178,15 @@
 		
 		<section class="page" data-page="register" style="display:none;">
 			<header>
-				<h1>Customise your game</h1>
+				<h1>Register</h1>
 			</header>
-
-			<p>Add the images of Snake and your target</p>
-            
-			<hr>
 			
 			<form id="avatar-form" class="content" method="post" action="" enctype="multipart/form-data">
-				<label>
-					<strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.
+				<p class="label">Nickname</p>
+				<input type="text" name="nickname" placeholder="Choose your Nickname">
+				<p class="label">Avatar</p>
+				<label id="avatar-control">
+					<strong>Choose an image</strong><span class="box__dragndrop"> or drag it here <br>(optional)</span>
 					<input class="box__file" type="file" name="avatar" id="avatar-input" />
 				</label>
 			</form>
