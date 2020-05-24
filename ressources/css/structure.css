@@ -47,7 +47,8 @@ h1 {
     font-size: 4em;
 }
 
-p {
+p,
+.content {
     width: 60%;
     margin: 0 auto 2em auto
 }
@@ -69,7 +70,9 @@ nav li {
     margin:2em;
 }
 
-nav li a{
+nav li a,
+.button {
+    font-family:inherit;
     display: block;
     margin:0;
     text-decoration: none;
@@ -80,7 +83,7 @@ nav li a{
     background-color: #9CC3F1;
 }
 
-nav li a.main-button{
+nav li a.main-button, .button.main-button{
     background-color: #FAC885;
 }
 
@@ -112,4 +115,27 @@ body > footer a:hover {
 video {
     max-width:100%;
     display: inline-block;
+}
+
+
+/*
+To review
+*/
+
+#avatar-form > label {
+    font-size: 1.25rem;
+    position: relative;
+    padding: 100px 20px;
+    display: block;
+    background-color: white;
+    outline: 2px dashed black;
+    outline-offset: -10px;
+}
+
+#avatar-form.is-dragover > label {
+    background-color: grey;
+}
+
+#avatar-input {
+    display:none;
 }

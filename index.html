@@ -39,6 +39,9 @@
 					<li>
 						<a href="#game" class="main-button">Play</a>
 					</li>
+                    <li>
+						<a href="#register">Register</a>
+					</li>
 					<li>
 						<a href="#hall-of-fame">Hall of Fame</a>
 					</li>
@@ -171,8 +174,43 @@
 			</nav>
 
 		</section>
+		
+		
+		<section class="page" data-page="register" style="display:none;">
+			<header>
+				<h1>Customise your game</h1>
+			</header>
 
-		<section class="page" data-page="game" style="display:none;">
+			<p>Add the images of Snake and your target</p>
+            
+			<hr>
+			
+			<form id="avatar-form" class="content" method="post" action="" enctype="multipart/form-data">
+				<label>
+					<strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.
+					<input class="box__file" type="file" name="avatar" id="avatar-input" />
+				</label>
+			</form>
+           
+            <hr>
+            <button onclick="getLocation()" class="content button">Click here to find your location</button>
+            <p id="location"></p>
+
+            
+            <!-- <hr>
+            <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p> -->
+            <button type="submit" class="content button">Register</button>
+            
+            
+			<nav>
+				<ul>
+					<li>
+						<a href="#home" class="main-button">Home</a>
+					</li>
+				</ul>
+			</nav>
+
+		</section>
 
 
 		<section class="page" data-page="game" style="display:none;">
@@ -199,6 +237,9 @@
 		<script src="game/game.js"></script>
 
 		<script src="ressources/js/app.js"></script>
-
+        <script src="ressources/js/geoLocation.js"></script>
+       
+        <script>
+        </script> 
 	</body>
 </html>
