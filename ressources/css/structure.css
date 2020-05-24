@@ -47,7 +47,8 @@ h1 {
     font-size: 4em;
 }
 
-p {
+p,
+.content {
     width: 60%;
     margin: 0 auto 2em auto
 }
@@ -69,7 +70,9 @@ nav li {
     margin:2em;
 }
 
-nav li a{
+nav li a,
+.button {
+    font-family:inherit;
     display: block;
     margin:0;
     text-decoration: none;
@@ -80,7 +83,7 @@ nav li a{
     background-color: #9CC3F1;
 }
 
-nav li a.main-button{
+nav li a.main-button, .button.main-button{
     background-color: #FAC885;
 }
 
@@ -118,93 +121,21 @@ video {
 /*
 To review
 */
-section button.registerbtn {
-    display: block;
-    margin:0;
-    text-decoration: none;
-    font-family:'Indie Flower', cursive, Tahoma, Arial, "Sans-Serif";
-    padding: 8px 25px;
-    border:0 solid transparent;
-    font-size: 1.5rem;
-    color: #333;
-    background-color: #9CC3F1;
-}
 
-section button.registerbtn:hover {
-  opacity: 1;
-}
-
-section button.locationbtn{
-    list-style-type: none;
-    display: block;
-    margin:0;
-    text-decoration: none;
-    font-family:'Indie Flower', cursive, Tahoma, Arial, "Sans-Serif";
-    padding: 8px 25px;
-    border:0 solid transparent;
-    font-size: 1.5rem;
-    color: #333;
-    background-color: #FAC885;
-}
-
-.box {
+#avatar-form > label {
     font-size: 1.25rem;
-    background-color: #c8dadf;
     position: relative;
     padding: 100px 20px;
-}
-
-section .box.has-advanced-upload {
-    outline: 2px dashed #92b0b3;
-    outline-color: rgb(146, 176, 179);
-    outline-style: dashed;
-    outline-width: 2px;
+    display: block;
+    background-color: white;
+    outline: 2px dashed black;
     outline-offset: -10px;
 }
 
-#file.box__file{
-    width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
+#avatar-form.is-dragover > label {
+    background-color: grey;
 }
 
-button.box__button{
-     width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
-}
-
-svg:not(:root) {
-    overflow: hidden;
-}
-svg {
-    fill:currentColor;
-    vertical-align:middle;
-    pointer-events:none
-}
-
-section .box__dragndrop,
-section .box__uploading,
-section .box__success,
-section .box__error {
-  display: none;
-}
-
-.box.has-advanced-upload {
-  background-color: white;
-  outline: 2px dashed black;
-  outline-offset: -10px;
-}
-.box.has-advanced-upload .box__dragndrop {
-  display: inline;
-}
-
-.box.is-dragover {
-  background-color: grey;
+#avatar-input {
+    display:none;
 }

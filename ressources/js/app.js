@@ -1,88 +1,95 @@
 
+async function initApp()
+{
+    let configPromise = new Promise((resolve) => {
+        $.get(
+            "config.json", 
+            resolve
+        );
+    });
+    
+    let config = await configPromise;
 
-var gameLevels = [
-    {
-        levelName: 'First level',
-        intervalTime:  300,
-        addObstacleTimeout: 50,
-        obstacles: {
-            'apple': 1,
-            'teacher': 0,
+    let currLevel = 0;
+
+    let game = new Game('#zone', config.gameLevels[0]);
+    var navigation = new Navigation();
+    
+    game.onWin = function() {
+        navigation.go('score');
+        return;
+    };
+    
+    
+    
+    /**
+     * Game Page
+     */
+    let pageGame = new Page();
+    
+    pageGame.onInit = function(){
+        initKeyboardController(game);
+    };
+    pageGame.onBeforeShow = function() {
+    
+    };
+    pageGame.onShow = function(){
+        // Change behaviour depending on game state
+        game.start();
+    };
+    
+    pageGame.onBeforeHide = function(){
+        game.pause();
+    };
+    
+    navigation.addPage('game', pageGame);
+    
+    
+    
+    
+    /**
+     * Level completed page
+     */
+    $('#next-level').click(function(e){
+        e.preventDefault();
+        currLevel++;
+        if (currLevel >= config.gameLevels.length) {
+            // alert('You won !');
         }
-    },
-    {
-        levelName: 'Second level',
-        intervalTime:  280,
-        addObstacleTimeout: 50,
-        obstacles: {
-            'apple': 2,
-            'teacher': 0,
-        }
-    },
-    {
-        levelName: 'First level',
-        intervalTime:  200,
-        addObstacleTimeout: 50,
-        obstacles: {
-            'apple': 6,
-            'teacher': 0,
-        }
-    },
-];
-
-let currLevel = 0;
-
-let game = new Game('#zone', gameLevels[0]);
-var navigation = new Navigation();
-
-
-game.onWin = function() {
-    navigation.go('score');
-    return;
-};
+    
+        game.init(config.gameLevels[currLevel]);
+        navigation.go('game');
+    });
+    
+    $('#replay-level').click(function(e){
+        e.preventDefault();
+    
+        game.init(config.gameLevels[currLevel]);
+        navigation.go('game');
+    });
 
 
 
-/**
- * Game Page
- */
-let pageGame = new Page();
+    /**
+     * Gestion du drag and drop
+     */
+    $('#avatar-form').on('dragover dragenter', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).addClass('is-dragover');
+    });
 
-pageGame.onInit = function(){
-    initKeyboardController(game);
-};
-pageGame.onBeforeShow = function() {
+    $('#avatar-form').on('dragleave dragend drop', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass('is-dragover');
+    });
 
-};
-pageGame.onShow = function(){
-    // Change behaviour depending on game state
-    game.start();
-};
+    $('#avatar-form').on('drop', function(e){
+        files = e.originalEvent.dataTransfer.files;
+        document.getElementById('avatar-input').files = files;
+    });
 
-pageGame.onBeforeHide = function(){
-    game.pause();
-};
+}
 
-navigation.addPage('game', pageGame);
-
-
-
-
-
-$('#next-level').click(function(e){
-    e.preventDefault();
-    currLevel++;
-    if (currLevel >= gameLevels.length) {
-        // alert('You won !');
-    }
-
-    game.init(gameLevels[currLevel]);
-    navigation.go('game');
-});
-
-$('#replay-level').click(function(e){
-    e.preventDefault();
-
-    game.init(gameLevels[currLevel]);
-    navigation.go('game');
-});
+initApp();

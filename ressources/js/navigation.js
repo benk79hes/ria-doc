@@ -1,4 +1,4 @@
-function Page()
+function Page(options)
 {
     this.onInit = function(){};
     this.onBeforeShow = function(){};
