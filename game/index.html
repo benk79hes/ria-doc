@@ -31,8 +31,7 @@
                 {
                     levelName: 'First level',
                     intervalTime:  300,
-                    addObstacleTimeout: 500,
-                    IdPlayer : 'music1',
+                    addObstacleTimeout: 300,
                     obstacles: {
                         'apple': 1,
                         'teacher': 0,
@@ -40,9 +39,8 @@
                 },
                 {
                     levelName: 'Second level',
-                    IdPlayer : 'music2',
                     intervalTime:  280,
-                    addObstacleTimeout: 500,
+                    addObstacleTimeout: 300,
                     obstacles: {
                         'apple': 2,
                         'teacher': 0,
@@ -51,7 +49,7 @@
                 {
                     levelName: 'Third level',
                     intervalTime:  200,
-                    addObstacleTimeout: 50,
+                    addObstacleTimeout: 200,
                     obstacles: {
                         'apple': 6,
                         'teacher': 0,
@@ -64,18 +62,28 @@
             let game;
 
             window.onload = function() {
-                let game = new Game('#zone', gameLevels[0]);
+                let game = new Game('#zone', gameLevels[currLevel]);
                 initKeyboardController(game);
                 
-                game.onWin = function() {
-                    currLevel++;
+ //               saveCanceled();
+                
+                game.winner = function() {
+ /*                   currLevel++;
+                    
+                    scoreTot = this.calcScore();
+        
+        this.endLevel();
+        
+        alert('You have been eated ' + applesEaten + ' apples. \n (You could eat ' + applesTotProd + ') \n' + 'Your score with Time bonus is : ' + scoreTot );
+
                     if (currLevel >= gameLevels.length) {
                         alert('You won !');
-                    }
+ /*                   }
 
-                    game.init(gameLevels[currLevel])
+                    game.init(gameLevels[currLevel]);
+                    
                     game.start();
-                };
+*/                };
 
                 game.start();
             }

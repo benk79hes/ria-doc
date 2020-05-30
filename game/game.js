@@ -7,6 +7,9 @@
 ******************************************************************************/
 
 
+
+
+
 function Snake(x, y, length)
 {
     /**
@@ -119,6 +122,50 @@ function Snake(x, y, length)
         return false;
     };
 }
+
+
+/**************************** Objet Obstacle ***************************/
+
+function Obstacle (x, y, obstacleLength, dirMur, snake, canvas)
+{
+    this.x = x;
+    this.y = y;
+    this.length = obstacleLength;
+    this.long = [];
+    for (let i = 0; i < this.length; i++) {
+        y++;
+        this.long.push({x: x, y: y});
+    }
+    
+}
+
+
+function Door(x, y, dirMur, snake, canvas) 
+{
+    this.x = x;
+    this.y = y;
+    let length = 3;
+    this.longDoor = [];
+    
+    for (let i = 0; i <length; i++) {
+        y++;
+        this.longDoor.push({x: x, y: y});
+        this.longDoor.push({x: x+1, y: y});
+
+    }
+    
+    
+    entry = function (xMove, yMove) {
+      
+        if ((xMove + 1) == this.x && (yMove + 1) == (this.y+1) ) {
+            return true;
+        }
+        
+        return false;
+    };
+    
+}
+
 
 /**************************** Objet Apple ***************************/
 
@@ -305,7 +352,7 @@ function Apple(x, y, snake, canvas)
     
     // Métthode de test de collision avec le serpent
     this.noSnakeCollision = function () {
-         
+      
         for (i = 0; i < snake.trace.length; i++){
             if (this.x == snake.trace[i].x && this.y - 1 == snake.trace[i].y) {
                     return true;
@@ -321,10 +368,10 @@ function Apple(x, y, snake, canvas)
                 }
         }
         
-        return false;
         
     };
-  
+
+
     // Méthode de test si Apple est en dehors du canvas
     this.outOfGridApple = function  (place, placeAfter) {
        
@@ -369,6 +416,27 @@ function Apple(x, y, snake, canvas)
         };    
 }
 
+/*
+function noCollision (objetMoveX, objetMoveY, objetNoCollision, objetNoCollisionLong, objetNoCollisionX, objetNoCollisionY) 
+{
+        for (i = 0; i < objetNoCollisionLong.length; i++){
+            if (objetMoveX == objetNoCollision[i].objetNoCollisionX && objetMoveY - 1 == objetNoCollision[i].objetNoCollisionY) {
+                    return true;
+                }
+            if (objetMoveX == objetNoCollision[i].objetNoCollisionX && objetMoveY + 1 == objetNoCollision[i].objetNoCollisionY) {
+                    return true;
+                }
+             if (objetMoveX - 1 == objetNoCollision[i].objetNoCollisionX && objetMoveY == objetNoCollision[i].objetNoCollisionY) {
+                    return true;
+                }
+           if (objetMoveX + 1 == objetNoCollision[i].objetNoCollisionX && objetMoveY == objetNoCollision[i].objetNoCollisionY) {
+                    return true;
+                }
+        }
+        return false;
+        
+    }
+*/
 
 function deepAssign(o1, o2) {
     for (o in o2) {
@@ -382,7 +450,7 @@ function deepAssign(o1, o2) {
 }
 
 
-/**************************** Player ********************************/
+/**************************** Music player ********************************/
 function Player (idPlayer)
 {
     let player = document.querySelector('#' + idPlayer);
@@ -403,7 +471,7 @@ function Game(querySelector, options)
 {
     let opts = {
         levelName: 'First level',
-        intervalTime:  150,
+        intervalTime:  300,
         addObstacleTimeout: 500,
         obstacles: {
             'apple': 1,
@@ -416,8 +484,8 @@ function Game(querySelector, options)
     var canvas = document.querySelector(querySelector);
     var ctx = canvas.getContext('2d');
 
-    var IdPlayer;
-    var player; 
+ //   var IdPlayer;
+//    var player; 
     
     var intervalID = null;
     var gridSize = 20
@@ -428,51 +496,96 @@ function Game(querySelector, options)
     var applesTotProd;    
     var applesEaten;
     var apples;
+    var obstacles;
     var timeout; 
     var snake;
+    var apple;
+    var obstacleLength;
     
+    let applesExtraTime = [];
+    let elapseTime = 0;
     let scoreTot = 0;
     let score = 0;
     let beginingLevelTime = new Date();
     let endLevelTime;
 
-    // console.log(opts);
-
-    // position sur le canvas
-    //var depX = depY = 0;
-
-    // départ serpent au milieu du canvas (utilisé ici)
-    //var x = Math.trunc(Math.random() * canvas.width / gridSize) * gridSize;
-    //var y = Math.trunc(Math.random() * canvas.height / gridSize) * gridSize;
-
-    // Position "pomme" aléatoire
-    // var pomX = Math.trunc(Math.random() * canvas.width/gridSize) * gridSize; ;
-    // var pomY = Math.trunc(Math.random() * canvas.height/gridSize) * gridSize;
-
+    let backToWork = false;
 
     this.init = function(options) {
         ctx.clearRect(0, 0, canvas.width, canvas.height); 
-console.log('init');
-        player = new Player(document.getElementById(opts.IdPlayer)) ;
-        deepAssign(opts, options);
-//        score = 0;
-        applesTotProd = 0;
-        applesEaten = 0;
-        apples = [];
-        timeout = 0; 
-        snake = new Snake(Math.trunc(gameGridWidth / 2), Math.trunc(gameGridHeight / 2), 3);
- //       player.play();
-        addApple();
-    };
 
+        saveCanceled();
+        
+        if (restore()) {
+            
+ console.log('init restore');
+
+            backToWork = JSON.parse(window.localStorage.getItem('backToWork'));
+           // game.init(gameLevels[parseInt(JSON.parse(window.localStorage.getItem('level')))]); 
+            
+       // Récupération du Snake
+        let dataSnake = JSON.parse(window.localStorage.getItem('snake'));
+        let snakeX = parseInt(dataSnake.x);
+        let snakeY = parseInt(dataSnake.y);
+        let snakeLength = parseInt(dataSnake.length);
+        
+        let snake = new Snake (snakeX, snakeY, snakeLength);            
+        let dataApples = JSON.parse(window.localStorage.getItem('apples'));
+
+            opts = {
+                levelName: gameLevels[parseInt(JSON.parse(window.localStorage.getItem('level')))].levelName,
+                intervalTime:  150,
+                addObstacleTimeout: 50,
+                obstacles: {
+                    'apple': parseInt(parseInt(dataApples.length)),
+                    'teacher': 0,
+                    }
+            }
+            
+        scoreTot = parseInt(JSON.parse(window.localStorage.getItem('score')));            
+        let applesEaten = parseInt(dataApples.applesEaten);
+          
+        // Récupération de apple
+          for (i=0 ; i < apples.length ; i++){
+                let dataApple = JSON.parse(window.localStorage.getItem(i));
+              
+                let apple = new Apple(parseInt(dataApple.x),parseInt(dataApple.y), snake, canvas);
+                addApple (apple, apples);
+
+          }
+                       
+            scoreTot = parseInt(JSON.parse(window.localStorage.getItem('score')));
+            elapseTime = parseInt(JSON.parse(window.localStorage.getItem('elapseTime')));
+            applesTotProd = parseInt(dataApples.applesTotProd) - parseInt(apples.length);
+            applesEaten = parseInt(dataApples.applesEaten);
+
+        }
+        else {
+            saveCanceled();
+            console.log('init NO restore');
+
+            deepAssign(opts, options);
+            elapseTime = 0;
+            applesTotProd = 0;
+            applesEaten = 0;
+            apples = [];
+            timeout = 0;        
+
+            snake = new Snake(Math.trunc(gameGridWidth / 2), Math.trunc(gameGridHeight / 2), 3);
+            addApple(placeApple(), apples);
+        }
+        
+        
+    };
+           
+    
     /**************************** Fonction détermination place Apple ***************************/   
     function placeApple () {
         
+        let apple;
         let randomX = Math.trunc(Math.random() * (gameGridWidth-1));
         let randomY = Math.trunc(Math.random() * (gameGridHeight-1));
-        const coordonnateApple = [randomX,randomY];
-        let test1 = false ;
-        let test2 = false ;
+        
         
          while (!testPosition (randomX, randomY)) {
             
@@ -480,23 +593,23 @@ console.log('init');
             randomY = Math.round(Math.random() * (gameGridHeight-1));
         }
         
-        return coordonnateApple;
+        apple = new Apple(randomX, randomY, snake, canvas);
+        
+        return apple;
     }
     
 
-    /**************************** Fonction Ajout Apple ***************************/   
-    function addApple() {
+    /**************************** Fonctions  Ajout Apple ***************************/ 
+    
+    function addApple(apple, table ) {
         
-        let coordonnateApple = placeApple();
-        
-        let apple = new Apple(coordonnateApple[0], coordonnateApple[1], snake, canvas);
-                
-        apples.push(apple);
+       elapseTime = new Date () - beginingLevelTime;
+
+        table.push(apple);
         applesTotProd++;
 
     }
-    
-
+ 
 
 // direction serpent en focntion de celle saisie par le joueur
     this.up = function() {
@@ -542,7 +655,6 @@ console.log('init');
     };
 
     this.onGameOver = function(){
- //       alert('Game over');
 
         if (confirm ("Game Over !!!!!\n Voulez-vous recommencer ?")) {
             this.init(options);
@@ -560,19 +672,35 @@ console.log('init');
 //        player.pause();
     };
     
-//    this.onWin = function(){
-//        scoreTot = this.calcScore();
-        
-/*        alert('You have been eated ' + applesEaten + ' apples. \n (You could eat ' + applesTotProd + ') \n' + 'Your score with Time bonus is : ' + scoreTot );
+    this.onWin = function(){
+        scoreTot = this.calcScore();
+                
+        if (confirm('You won ! \n' + 'Your total score is : ' + scoreTot + '\n\n Would you play again ?') ){
+            
+            game.init(gameLevels[0])
+
+            game.start();
+            
+        }
+            
+  //       Fenetre de démarrage ou d'dentification  :  
+//          window.open(strUrl,)
+       
+ 
     };
-*/
+
     this.calcScore = function () {
         
-//        let scoreTot;
+        let playerTimeResult;
         
-        let bestTimeResult = applesTotProd * 50000 /* faire variable pour */;       
-        let playerTimeResult = endLevelTime - beginingLevelTime;
+        let bestTimeResult = applesTotProd * 50000 /* faire variable pour */;     
         
+        if (backToWork == true) {
+            playerTimeResult = elapseTime + endLevelTime - beginingLevelTime;
+        }else {
+            playerTimeResult = endLevelTime - beginingLevelTime;
+        }
+    
 console.log("playerTimeResult = " + playerTimeResult);                
 
         let playerQuote = bestTimeResult / playerTimeResult ;
@@ -598,9 +726,16 @@ console.log("score fin = " + (scoreTot + bonus));
         
         if (applesEaten == opts.obstacles.apple) {
             
-            // à changer avec une page html
+            alert('You have been eated ' + applesEaten + ' apples. \n You could eat ' + applesTotProd + ') \n' + 'Your score with Time bonus is : ' + scoreTot );
             
-            alert('You have been eated ' + applesEaten + ' apples. \n (You could eat ' + applesTotProd + ') \n' + 'Your score with Time bonus is : ' + scoreTot );
+            if(!confirm ('Would you continue ?')){
+               if (confirm('Would you like came back to this level  later ?')) {
+                    save ();               
+                }
+            console.log("fonction save ??? " + JSON.parse(window.localStorage.getItem('backToWork')));
+          
+            }
+            
             return true;
         }
         
@@ -615,17 +750,27 @@ console.log('run fonction');
         if (applesEaten >= opts.obstacles.apple) {
             this.pause();
 
-            if (this.endLevel()) {
-                calcScore(); 
+             if (currLevel >= gameLevels.length) {
+                 this.onWin()
+                endLevelTime = new Date ();
+                this.calcScore();
+                this.winner();
                 return true;
             }
 
-            if(this.onWin()) {
-                endLevelTime = new Date ();
-                calcScore();
-                this.onWin();
+            if (this.endLevel()) {
+                
+                currLevel++;
+                                    
+        this.init(gameLevels[currLevel]);
+
+        this.start();
+
+                
                 return true;
             }
+
+            
             
             return false;
         }
@@ -635,27 +780,21 @@ console.log('run fonction');
         *   Dynamique de jeu                                                      *
         *                                                                         *
         **************************************************************************/
-
-        // Lecture musique pendant niveau
-  /*          player.play( player=> {
-                player.play();
-                
-            }, 10000);
-  */      
-        
+      
         // Mise en mouvement du serpent
         snake.move();
 
         // Mise en mouvement de la pomme
         if (apples.length > 0) {
             apples.forEach(apple => {
-                if(/* apples[apples.length-1] */ apple.noSnakeCollision() ){
-                    /* apples[apples.length-1] */ apple.stopApple();
+                if( apple.noSnakeCollision() ){
+                    apple.stopApple();
                 }
                 else {
-                    /* apples[apples.length-1] */ apple.moveApple();
+                    apple.moveApple();
                 }
-            }, opts.addObstacleTimeout);
+            }, 100);
+
         }
             
         if (snakeOutOfGrid() || snake.hasCollision()) {
@@ -667,27 +806,34 @@ console.log('run fonction');
 
         let eating = false;
         apples = apples.filter((apple) => {
-
+            
+            let index = apples.indexOf(apple);
+            
             if (snake.x == apple.x && snake.y == apple.y) {
 
                 snake.eat();
                 eating = true;
                 applesEaten++;
+                apples.splice(1,1);  // on enlève du tableau la pomme mangé (pour données localStorage)
+                
 //Gestion du score primaire  -->  +10 à chaque pomme mangée (bonus en fonction du temps en fin de partie)
- scoreTot+=10;
+                scoreTot+=10;
+                
                 return false;
             }
 
             return true;
         });
 
-        if (eating) {
-            setTimeout(addApple, 1000);
+        if (eating && applesEaten <= opts.obstacles.apple) {
+            
+            setTimeout(addApple(placeApple(),apples), 1000);
+        
         }
 
-        if (timeout++ > 1000) {
+        if (timeout++ > 100) {
             timeout = 0 ;
-            addApple();
+            addApple(placeApple(),applesExtraTime);
         }
 
     };
@@ -745,15 +891,16 @@ console.log('run fonction');
          * 
          * A mettre dans une boucle pour chaque pomme
          */
-        // Affichage de la 2pomme"
         apples.forEach(apple => {
             ctx.beginPath();
             ctx.fillStyle="#FF0000";
             ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
             ctx.closePath();
         }, 40);
-
+      
     };
+    
+    
     
     this.init(options);
 
@@ -858,4 +1005,121 @@ function initKeyboardController(game)
     document.addEventListener("keydown", keyboardEvent);
 }
 
+function save () 
+{
+    if (typeof(Storage) !== "undefined") {
+        
+        // identifiant de récupération des données pour ce jeu
+        window.localStorage.setItem('snakeRIA', 'Projet RIA 2020 Ben Marina et Matth');
+
+        window.localStorage.setItem('backToWork', JSON.stringify(backToWork));
+
+        
+/*        gameLevels[parseInt(JSON.parse(window.localStorage.getItem('level')))]
+        gameLevels.findIndex(callback(opts.levelName));
+*/
+        window.localStorage.setItem('level', JSON.stringify((currLevel+1).toString));
+
+        window.localStorage.setItem('score', JSON.stringify(scoreTot));
+
+ //       let elapseTime =               // voir à créer un différenciel de temps à chaque fois qu'une pomme est mangée
+        window.localStorage.setItem('elapseTime', JSON.stringify(elapseTime));  
+
+        const saveSnake = {
+            x : (snake.x).toString(),
+            y : (snake.y).toString(),
+            length : (snake.length).toString(),
+
+        }
+
+        window.localStorage.setItem('snake', JSON.stringify(saveSnake));
+
+
+        const saveApples = {
+            length : apples.length,
+            applesEaten : applesEaten,
+            applesTotProd : applesTotProd,
+        }
+        window.localStorage.setItem('apples', JSON.stringify(saveApples));
+
+        apples.foreach (apple =>{
+        let appleIndex = apples.indexOf(apple);
+        const saveApple = {
+            x : (apple.x).toString(),
+            y : (apple.y).toString(),
+        }
+
+        let val = JSON.stringify(saveApple);
+
+        window.localStorage.setItem(appleIndex, val);
+
+        });
+        
+    }
+}
+
+function saveCanceled ()
+{
+    
+        backToWork = false;
+        
+        window.localStorage.removeItem('snakeRIA');
+        
+        window.localStorage.removeItem('level');
+
+        window.localStorage.removeItem('score');
+
+        window.localStorage.removeItem('elapspeTime');  
+
+        window.localStorage.removeItem('snake');
+
+        window.localStorage.removeItem('apples');
+
+//        window.localStorage.removeItem(appleIndex);
+
+// JSON.parse(
+    
+}
+
+function restore ()
+{
+      if (typeof(Storage) !== "undefined") {
+  
+    if(window.localStorage.getItem('snakeRIA') !== "undefined" && window.localStorage.getItem('snakeRIA') == "Projet RIA 2020 Ben Marina et Matth") {
+        
+ /*       let level = JSON.parse(window.localStorage.getItem('level'));
+         
+        let score = JSON.parse(window.localStorage.getItem('score'));
+       
+        let elapseTime = JSON.parse(window.localStorage.getItem('elapseTime'));
+  */        
+       // Récupération du Snake
+ /*       let dataSnake = JSON.parse(window.localStorage.getItem('snake'));
+ */
+        /*       let snakeX = parseInt(snake.x);
+        let snakeY = parseInt(snake.y);
+        let snakeLength = parseInt(snake.length);
+ */       
+ 
+        // Récupération de [] apples, nombre de pommes déjà mangées et nombre de pommes déjà produites
+
+  /*      let dataApples = JSON.parse(window.localStorage.getItem('apples'));
+ //       let apples = [dataApples.length];
+          
+  //      let applesEaten = dataApples.applesEaten;
+          
+        // Récupération de apple
+          for (i=0 ; i < apples.length ; i++){
+                let dataApple = JSON.parse(window.localStorage.getItem(i));
+              
+          }
+ */          
+       return true;
+       }
+       
+    }
+    
+    return false;
+
+}
 
