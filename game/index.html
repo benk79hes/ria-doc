@@ -11,55 +11,66 @@
         <canvas id="zone" width="700" height="700" style="background-color:#C0C0C0;margin:0 auto;">
             Désolé, votre navigateur (ou sa version) ne prend pas en charge les "canvas".
         </canvas>
-        <script src="game.js"></script>
+         <script src="game.js"></script>
         <script>
 
             var gameLevels = [
                 {
                     levelName: 'First level',
                     intervalTime:  300,
-                    addObstacleTimeout: 50,
+                    addObstacleTimeout: 300,
                     obstacles: {
-                        'apple': 2,
+                        'apple': 1,
                         'teacher': 0,
-                    }
+                    },
                 },
                 {
                     levelName: 'Second level',
                     intervalTime:  280,
-                    addObstacleTimeout: 50,
+                    addObstacleTimeout: 300,
                     obstacles: {
                         'apple': 2,
                         'teacher': 0,
                     }
                 },
                 {
-                    levelName: 'First level',
+                    levelName: 'Third level',
                     intervalTime:  200,
-                    addObstacleTimeout: 50,
+                    addObstacleTimeout: 200,
                     obstacles: {
                         'apple': 6,
                         'teacher': 0,
                     }
                 },
+    
             ];
 
             let currLevel = 0;
             let game;
 
             window.onload = function() {
-                let game = new Game('#zone', gameLevels[0]);
+                let game = new Game('#zone', gameLevels[currLevel]);
                 initKeyboardController(game);
+                
+ //               saveCanceled();
+                
+                game.winner = function() {
+ /*                   currLevel++;
+                    
+                    scoreTot = this.calcScore();
+        
+        this.endLevel();
+        
+        alert('You have been eated ' + applesEaten + ' apples. \n (You could eat ' + applesTotProd + ') \n' + 'Your score with Time bonus is : ' + scoreTot );
 
-                game.onWin = function() {
-                    currLevel++;
                     if (currLevel >= gameLevels.length) {
                         alert('You won !');
-                    }
+ /*                   }
 
-                    game.init(gameLevels[currLevel])
+                    game.init(gameLevels[currLevel]);
+                    
                     game.start();
-                };
+*/                };
 
                 game.start();
             }

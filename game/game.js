@@ -7,6 +7,9 @@
 ******************************************************************************/
 
 
+
+
+
 function Snake(x, y, length)
 {
     /**
@@ -28,20 +31,19 @@ function Snake(x, y, length)
      * 2: bas
      * 3: gauche
      */
-    var direction = 0; 
+    this.direction = 0; 
     
     var tailleTrace = this.trace.length;
     var sautTrace = 2;
-    var tailleMaxTrace = 1000; // Cette valeur sera changé plus tard (enfin, à voir)
+    var tailleMaxTrace = 1500; // Cette valeur sera changé plus tard (enfin, à voir)
 
 
     this.setDirection = function(dir) {
 
-        console.log(dir);
         /**
          * Eviter le demi-tour
          */
-        if (direction == (dir + 2) % 4)
+        if (this.direction == (dir + 2) % 4)
             return;
 
 
@@ -49,13 +51,13 @@ function Snake(x, y, length)
          * Changement de direction
          */
 
-        direction = dir;
-    }
+        this.direction = dir;
+    };
 
     this.move = function(){
         var depX, depY;
         
-        switch (direction) {
+        switch (this.direction) {
             case 0:
                 depX=0;
                 depY=-1;
@@ -87,18 +89,6 @@ function Snake(x, y, length)
         // Trace du serpent
         this.trace.unshift({x:this.x,y:this.y});
 
-        // pour augmenter la trace du serpent toutes les X (ici 3) secondes
-        /*
-        if(tailleTrace <= tailleMaxTrace){
-        if((compteBoucle++)%100 == 3){
-        sautBoucle-- ;
-        if(sautBoucle<0){
-        tailleTrace+=sautTrace;
-        }
-        }
-        }
-        */
-
         while (this.trace.length > tailleTrace) {
             // pour enlèver un élément
             this.trace.pop();
@@ -109,7 +99,7 @@ function Snake(x, y, length)
         if (tailleTrace < tailleMaxTrace) {
             tailleTrace += sautTrace;
         }
-    }
+    };
 
     this.hasCollision = function() {
         for (var i = 1; i < this.trace.length; i++) {
@@ -118,13 +108,310 @@ function Snake(x, y, length)
             }
         }
         return false;
-    }
+    };
 }
 
-function Apple(x, y)
+
+/**************************** Objet Obstacle ***************************/
+
+function Obstacle (x, y, obstacleLength, dirMur, snake, canvas)
 {
     this.x = x;
     this.y = y;
+    this.length = obstacleLength;
+    this.long = [];
+    for (let i = 0; i < this.length; i++) {
+        y++;
+        this.long.push({x: x, y: y});
+    }
+    
+}
+
+
+function Door(x, y, dirMur, snake, canvas) 
+{
+    this.x = x;
+    this.y = y;
+    let length = 3;
+    this.longDoor = [];
+    
+    for (let i = 0; i <length; i++) {
+        y++;
+        this.longDoor.push({x: x, y: y});
+        this.longDoor.push({x: x+1, y: y});
+
+    }
+    
+    
+    entry = function (xMove, yMove) {
+      
+        if ((xMove + 1) == this.x && (yMove + 1) == (this.y+1) ) {
+            return true;
+        }
+        
+        return false;
+    };
+    
+}
+
+
+/**************************** Objet Apple ***************************/
+
+function Apple(x, y, snake, canvas)
+{
+    this.x = x;
+    this.y = y;
+
+    snake = snake;    
+    canvas = canvas;
+    
+    this.depDirection;
+    let depApple = [0,0];
+    let moveAlea;
+    let testgridBounds = [false /*haut*/, false /*bas*/, false /*gauche*/, false /*droite*/];
+    let tabDirectionInit = ["Freez", "Up", "Down", "Left", "Right"];
+    let tabDirection = tabDirectionInit;
+    let choiceDirection;  //String
+    let choiceMove;   //int
+    
+    let timeAppleRegular = 10;
+    
+    // Méthode pour créer le déplacement aléatoire
+    this.randomMove = function () {
+        
+        choiceMove = Math.round(Math.random()*4);                    
+        choiceDirection = tabDirection [choiceMove];
+        
+        while (choiceDirection == null){
+            
+            choiceMove = Math.round(Math.random()*4);                    
+            choiceDirection = tabDirection [choiceMove];
+            
+        } 
+        
+        tabDirection = tabDirectionInit;  
+        
+        return choiceDirection;  // String
+    };
+    
+    // Méthode pour valider déplacement aléatoire
+    this.testPossiblMove = function () {
+                       
+        let snakeDirection ; 
+        
+        snakeDirection = snake.direction;
+        
+        if (snakeDirection == undefined) {
+            snakeDirection = Math.round(Math.random()*3);
+        }
+
+        
+        // déplacement impossible en fonction des limites de la grille
+        if (this.outOfGridApple("lat", -1)){
+           tabDirection [1] = null; 
+        }       
+        if (this.outOfGridApple("lat", 1)){
+            tabDirection [2] = null;
+        }
+        if (this.outOfGridApple("lon", -1)){
+            tabDirection [3] = null;
+        }
+        if (this.outOfGridApple("lon", 1)){
+            tabDirection [4] = null;
+        }
+
+        
+        // déplacement impossible en fonction du snake
+        switch(snakeDirection) {
+            case 0: //serpent qui monte
+                if (this.x == snake.x && (this.y + 1) <= snake.y) {
+ 
+                    tabDirection [1] = null;
+                }
+               break;
+
+            case 1: // serpent qui va à droite
+                if (this.y == snake.y && (this.x -1) >= snake.x) {
+
+                    tabDirection [3] = null;
+                }
+               break; 
+
+            case 2: // serpent qui descend
+                if (this.x == snake.x && (this.y -1) >= snake.y) {
+
+                    tabDirection [2] = null;                      
+                }                   
+                break; 
+
+            case 3: // serpent qui va à gauche
+                if (this.y == snake.y && (this.x +1) <= snake.y) {
+
+                    tabDirection [4] = null;
+                }                  
+                break; 
+
+        }
+               
+        // détermination du "déplacement" à faire réellement
+        this.depDirection = this.randomMove ();
+        
+    
+        if (this.depDirection == undefined) {
+            this.depDirection = "Up";
+        }
+  
+    };
+
+    // Méthode déplacement de Apple
+    this.moveApple = function () {
+
+        let checkTime = new Date();
+        
+        timeAppleRegular --;
+           
+        if (timeAppleRegular == 0 || this.depDirection == undefined) {
+            this.testPossiblMove();
+            timeAppleRegular = 10;
+        }
+
+ 
+        if (this.depDirection == undefined) {
+            
+            this.depDirection = tabDirection [Math.trunc(Math.random()*4)];  
+        }
+       
+        switch (this.depDirection) {
+            case "Up" :
+                depApple = [0, -1];
+                break ;
+                
+            case "Down" :  
+                depApple = [0, 1];
+                break ;
+                
+            case "Left" :
+                depApple = [-1, 0];
+                break ;
+                
+            case "Right" :
+                depApple = [1, 0];
+                break ;
+                
+            default :
+                depApple = [0, 0];
+                break ;
+        }
+          
+            this.testMoveApple();      
+            this.x += depApple[0];
+            this.y += depApple[1];          
+        
+    };
+  
+   // Méthode teste déplacement de la pomme si Apple en bordure de canvas 
+   this.testMoveApple = function () {
+       
+
+        if (this.outOfGridApple("lat", depApple[1])) {
+            depApple [1] = 0;
+            return true;
+
+        }
+
+        if (this.outOfGridApple("lon", depApple[0])) {
+            depApple [0] = 0;
+            return true;
+
+        }
+
+        return false;   
+    };
+    
+    // Méthode d'arrêt de la pomme si en bordure de cadre ou collision avec serpent
+    this.stopApple = function () {
+       this.x += 0;
+       this.y += 0;
+        
+        return true;
+    };
+    
+    // Métthode de test de collision avec le serpent
+    this.noSnakeCollision = function () {
+      
+        for (i = 0; i < snake.trace.length; i++){
+            if (this.x == snake.trace[i].x && this.y - 1 == snake.trace[i].y) {
+                    return true;
+                }
+            if (this.x == snake.trace[i].x && this.y + 1 == snake.trace[i].y) {
+                    return true;
+                }
+             if (this.x - 1 == snake.trace[i].x && this.y == snake.trace[i].y) {
+                    return true;
+                }
+           if (this.x + 1 == snake.trace[i].x && this.y == snake.trace[i].y) {
+                    return true;
+                }
+        }
+        
+        
+    };
+
+
+    // Méthode de test si Apple est en dehors du canvas
+    this.outOfGridApple = function  (place, placeAfter) {
+       
+            placeAfter = placeAfter || 0 ;
+            let placeTest ;
+             
+            if (place == "lon"){
+                placeTest = this.x + placeAfter;
+                if (placeTest >= 0 ){                   
+                    testgridBounds [2] = true ;
+                }
+                if (placeTest < canvas.width/20) {
+                    testgridBounds [3] = true ;
+                }
+
+                if (testgridBounds[2] == false || testgridBounds[3]  == false) {                   
+                    testgridBounds = /* testgridBoundsInit */ [false /*haut*/, false /*bas*/, false /*gauche*/, false /*droite*/];
+
+                   return true; 
+                }
+            }
+
+             if (place == "lat"){
+                placeTest = this.y + placeAfter;
+                if (placeTest >= 0){
+                    testgridBounds [0] = true ;
+                }
+                 if (placeTest < canvas.height/20) {
+                     testgridBounds [1] = true ;
+                }
+
+                 if (testgridBounds[0]  == false || testgridBounds[1]  == false) {
+                     testgridBounds = /* testgridBoundsInit */ [false /*haut*/, false /*bas*/, false /*gauche*/, false /*droite*/];
+
+                 return true; 
+                }
+             }
+            
+             testgridBounds = [false /*haut*/, false /*bas*/, false /*gauche*/, false /*droite*/];
+  
+            return  false;
+        };    
+}
+
+
+function deepAssign(o1, o2) {
+    for (o in o2) {
+        if (typeof o2[o] === 'object' && typeof o1[o] !== 'undefined') {
+            deepAssign(o1[o], o2[o]);
+        }
+        else {
+            o1[o] = o2[o];
+        }
+    }
 }
 
 function deepAssign(o1, o2) {
@@ -143,68 +430,93 @@ function Game(querySelector, options)
 {
     let opts = {
         levelName: 'First level',
-        intervalTime:  200,
-        addObstacleTimeout: 50,
+        intervalTime:  300,
+        addObstacleTimeout: 500,
         obstacles: {
-            'apple': 4,
+            'apple': 1,
             'teacher': 0,
         }
     };
 
-    //var canvas = document.getElementById("zone");
     var _self = this;
     var canvas = document.querySelector(querySelector);
     var ctx = canvas.getContext('2d');
 
+    
     var intervalID = null;
     var gridSize = 20
     var gameGridWidth = canvas.width / gridSize;
     var gameGridHeight = canvas.height / gridSize;
 
 
-
+    var applesTotProd;    
     var applesEaten;
     var apples;
+    var obstacles;
     var timeout; 
     var snake;
+    var apple;
+    var obstacleLength;
+    
+    var applesExtraTime;
+    
+    let elapseTime = 0;
+    let scoreTot = 0;
+    let beginingLevelTime = new Date();
+    let endLevelTime;
 
-
-
-    // console.log(opts);
-
-    // position sur le canvas
-    //var depX = depY = 0;
-
-    // départ serpent au milieu du canvas (utilisé ici)
-    //var x = Math.trunc(Math.random() * canvas.width / gridSize) * gridSize;
-    //var y = Math.trunc(Math.random() * canvas.height / gridSize) * gridSize;
-
-    // Position "pomme" aléatoire
-    // var pomX = Math.trunc(Math.random() * canvas.width/gridSize) * gridSize; ;
-    // var pomY = Math.trunc(Math.random() * canvas.height/gridSize) * gridSize;
-
+    let backToWork = false;
 
     this.init = function(options) {
         ctx.clearRect(0, 0, canvas.width, canvas.height); 
-        // console.log('init');
+
         deepAssign(opts, options);
+        elapseTime = 0;
+        applesTotProd = 0;
         applesEaten = 0;
         apples = [];
-        timeout = 0; 
+        applesExtraTime = [];
+        timeout = 0;        
+
         snake = new Snake(Math.trunc(gameGridWidth / 2), Math.trunc(gameGridHeight / 2), 3);
-        addApple();
+        addApple(placeApple(), apples);    
+
+    };
+           
+    
+    /**************************** Fonction détermination place Apple ***************************/   
+    function placeApple () {
+        
+        let apple;
+        let randomX = Math.trunc(Math.random() * (gameGridWidth-1));
+        let randomY = Math.trunc(Math.random() * (gameGridHeight-1));
+        
+        
+         while (!testPosition (randomX, randomY)) {
+            
+            randomX = Math.round(Math.random() * (gameGridWidth-1));
+            randomY = Math.round(Math.random() * (gameGridHeight-1));
+        }
+        
+        apple = new Apple(randomX, randomY, snake, canvas);
+        
+        return apple;
     }
+    
 
-    function addApple() {
-        let randomX = Math.round(Math.random() * gameGridWidth);
-        let randomY = Math.round(Math.random() * gameGridHeight);
+    /**************************** Fonctions  Ajout Apple ***************************/ 
+    
+    function addApple(apple, table ) {
+        
+       elapseTime = new Date () - beginingLevelTime;
 
-        let apple = new Apple(randomX, randomY);
-        apples.push(apple);
+        table.push(apple);
+        applesTotProd++;
+
     }
+ 
 
-
-
+// direction serpent en focntion de celle saisie par le joueur
     this.up = function() {
         snake.setDirection(0);
     };
@@ -234,65 +546,191 @@ function Game(querySelector, options)
         clearInterval(intervalID);
         this.onPause();
         intervalID = null;
-    }
-
-    this.start = function() {
-
-        intervalID = setInterval(function() { 
-            if(_self.run()) {
-                _self.draw();
-            }
-        }, opts.intervalTime);
-
     };
 
     this.onGameOver = function(){
-        alert('Game over');
+        if (confirm ("Game Over !!!!!\n Voulez-vous recommencer ?")) {
+            this.init(options);
+            scoreTot = 0;
+            this.start();
+        }
+        else {
+            
+        }
+        
     };
 
     this.onPause = function(){
         //alert('Game on pause. Hit space to continue');
     }
+
+    this.calcScore = function () {
+        
+        let playerTimeResult;
+        
+        let bestTimeResult = applesTotProd * 50000 /* faire variable pour */;     
+        
+        if (backToWork == true) {
+            playerTimeResult = elapseTime + endLevelTime - beginingLevelTime;
+        }else {
+            playerTimeResult = endLevelTime - beginingLevelTime;
+        }
     
-    this.onWin = function(score){
-        alert('Your score is: ' + score);
+        let playerQuote = bestTimeResult / playerTimeResult ;
+        let bonus = ~~(playerQuote * (scoreTot));
+        
+
+        if (playerQuote < 0.2) {
+            
+            bonus = 0;
+        }
+
+        return (scoreTot + bonus);  
+    };
+
+    this.start = function() {
+                
+        intervalID = setInterval(function() { 
+ 
+            if(_self.run()) {
+                _self.draw();
+            }
+            
+        }, opts.intervalTime);
+
     };
 
 
-    this.run = function() {
+    this.onWin = function(score){
+        alert('Your score is: ' + score);
+    };
+    
+    /*
+    this.onWin = function(){
+        scoreTot = this.calcScore();
+                
+        if (confirm('You won ! \n' + 'Your total score is : ' + scoreTot + '\n\n Would you play again ?') ){
+            
+            game.init(gameLevels[0])
+
+            game.start();
+            
+        }
+  
+    };
+    */
+    
+    this.endLevel = function () {
+      
+        endLevelTime = new Date ();
+        
+        scoreTot = this.calcScore();
+        
+        if (applesEaten == opts.obstacles.apple) {
+            
+            alert('You have been eated ' + applesEaten + ' apples. \n You could eat ' + applesTotProd + ') \n' + 'Your score with Time bonus is : ' + scoreTot );
+            
+            // On auvegarde les données de ce niveau au cas où le joueur veuille revenir à ce niveau à la fin du niveau suivant
+            if(!confirm ('Would you continue ?')){
+                
+                window.localStorage.setItem('currentLevel', JSON.stringify(currLevel));  // Faire " currentLevel +1 " lors de la récup de cette valeur
+                window.localStorage.setItem('scoreTot', JSON.stringify(scoreTot));
+        
+            }
+            
+            return true;
+        }
+        
+        return false;
+    };
+    
+    this.run = function() {     
+        
         if (applesEaten >= opts.obstacles.apple) {
             this.pause();
 
-            if(this.onWin) {
-                this.onWin(applesEaten);
+            if (currLevel >= gameLevels.length) {
+                this.onWin()
+                endLevelTime = new Date ();
+                this.calcScore();
+                this.winner();
+                return true;
             }
+
+            if (this.endLevel()) {
+                
+                currLevel++;
+                                    
+                this.init(gameLevels[currLevel]);
+
+                this.start();
+                return true;
+            }
+            
             return false;
         }
         
+
+
+
         /**************************************************************************
         *                                                                         *
         *   Dynamique de jeu                                                      *
         *                                                                         *
         **************************************************************************/
-
-
+      
+        // Mise en mouvement du serpent
         snake.move();
 
+        // Mise en mouvement de la pomme
+        if (apples.length > 0) {
+            apples.forEach(apple => {
+                if( apple.noSnakeCollision() ){
+                    apple.stopApple();
+                }
+                else {
+                    apple.moveApple();
+                }
+            }, 100);
 
+        }
+            
         if (snakeOutOfGrid() || snake.hasCollision()) {
             clearInterval(intervalID);
-            console.log(intervalID);
             this.onGameOver();
             return false;
         }
 
         let eating = false;
         apples = apples.filter((apple) => {
-
+            
+            let index = apples.indexOf(apple);
+            
             if (snake.x == apple.x && snake.y == apple.y) {
 
                 snake.eat();
                 eating = true;
+                applesEaten++;
+ //               apples.splice(1,1);  // on enlève du tableau la pomme mangé (pour données localStorage)
+                
+                //Gestion du score primaire  -->  +10 à chaque pomme mangée (bonus en fonction du temps en fin de partie)
+                scoreTot+=10;
+                
+                return false;
+            }
+
+            return true;
+        });
+
+         applesExtraTime = applesExtraTime.filter((apple) => {
+            
+            let index = applesExtraTime.indexOf(apple);
+            
+            if (snake.x == apple.x && snake.y == apple.y) {
+
+                snake.eat();
+                eating = true;
+                scoreTot+=5;
                 applesEaten++;
                 return false;
             }
@@ -300,13 +738,15 @@ function Game(querySelector, options)
             return true;
         });
 
-        if (eating) {
-            setTimeout(addApple, 1000);
+        if (eating && applesEaten < opts.obstacles.apple && apples.length < opts.obstacles.apple) {
+            
+            setTimeout(addApple(placeApple(),apples), 1000);
+        
         }
 
-        if (timeout++ > 1000) {
+        if (timeout++ > 100) {
             timeout = 0 ;
-            addApple();
+            addApple(placeApple(),applesExtraTime);
         }
 
         return true;
@@ -351,30 +791,96 @@ function Game(querySelector, options)
         }
         ctx.closePath();
 
-
-        // Il faut gérer la trace lors de la fonction pause car elle disparaît
-
-
+        /**
+        * Editer le score
+        **/
+         // Affichage du score
+         ctx.font = '16px Arial';
+         ctx.fillStyle = '#fff';
+         ctx.fillText('Score: ' + scoreTot, 5, 20);
 
         /**
          * Dessiner la pomme 
          * 
          * A mettre dans une boucle pour chaque pomme
          */
-        // Affichage de la 2pomme"
         apples.forEach(apple => {
             ctx.beginPath();
             ctx.fillStyle="#FF0000";
             ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
             ctx.closePath();
-        });
-
+        }, 40);
+        
+        applesExtraTime.forEach(apple => {
+            ctx.beginPath();
+            ctx.fillStyle="#FF2550";
+            ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
+            ctx.closePath();
+        }, 40);
+      
     };
     this.init(options);
-
 }
 
+// Méthode test la position d'un objet par rapport au serpent
+function testPosition () 
+{     
+    let test1 = false ;
+    let test2 = false ;
+    let cpt = 0; 
+    let possib = false;
+    let possib1 = true;
+    let possib2 = true;
+    
+   if (typeof x != 'undefined') {
+        if (x != snake.x) {
+            cpt = 0;
+            test1 = true ;
+        }
 
+        for (let j=1; j < snake.trace.length; j++) {
+            if (x == snake.trace[j].x) {                    
+                cpt += 1;
+            }
+        }
+       if (cpt != 0) {
+           test2 = false;
+       }
+
+       if (!test1 || !test2) {
+           possib1 = false;
+       }           
+    }
+
+    if (typeof y != 'undefined') {
+       if (y != snake.y) {
+            cpt = 0;
+            test1 = true ;
+        }
+
+        for (let j=1; j < snake.trace.length; j++) {
+            if (y == snake.trace[j].y) {
+                cpt +=1; 
+            }
+        }
+        
+        if (cpt != 0) {
+           test2 = false;
+       }
+
+        if (!test1 || !test2) {
+           possib2 = false;
+       }
+    }
+
+    if (possib1 && possib2) {
+        possib = true;
+    }
+    
+    return possib;  
+}
+
+// gestion des saisies direction au clavier
 function initKeyboardController(game)
 {
     function keyboardEvent(evt) {
@@ -414,5 +920,4 @@ function initKeyboardController(game)
 
     document.addEventListener("keydown", keyboardEvent);
 }
-
 
