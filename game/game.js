@@ -414,8 +414,18 @@ function deepAssign(o1, o2) {
     }
 }
 
+function deepAssign(o1, o2) {
+    for (o in o2) {
+        if (typeof o2[o] === 'object' && typeof o1[o] !== 'undefined') {
+            deepAssign(o1[o], o2[o]);
+        }
+        else {
+            o1[o] = o2[o];
+        }
+    }
+}
 
-/**************************** Fonction Jeu ***************************/
+
 function Game(querySelector, options)
 {
     let opts = {
@@ -426,15 +436,12 @@ function Game(querySelector, options)
             'apple': 1,
             'teacher': 0,
         }
-    }
+    };
 
-    //var canvas = document.getElementById("zone");
     var _self = this;
     var canvas = document.querySelector(querySelector);
     var ctx = canvas.getContext('2d');
 
- //   var IdPlayer;
-//    var player; 
     
     var intervalID = null;
     var gridSize = 20
@@ -541,19 +548,7 @@ function Game(querySelector, options)
         intervalID = null;
     };
 
-    this.start = function() {
-                
-        intervalID = setInterval(function() { 
- 
-            _self.run();
-            _self.draw();
-            
-        }, opts.intervalTime);
-
-    };
-
     this.onGameOver = function(){
-
         if (confirm ("Game Over !!!!!\n Voulez-vous recommencer ?")) {
             this.init(options);
             scoreTot = 0;
@@ -567,25 +562,7 @@ function Game(querySelector, options)
 
     this.onPause = function(){
         //alert('Game on pause. Hit space to continue');
-//        player.pause();
-    };
-    
-    this.onWin = function(){
-        scoreTot = this.calcScore();
-                
-        if (confirm('You won ! \n' + 'Your total score is : ' + scoreTot + '\n\n Would you play again ?') ){
-            
-            game.init(gameLevels[0])
-
-            game.start();
-            
-        }
-            
-  //       Fenetre de démarrage ou d'identification  :  
-//          window.open(strUrl,)
-       
- 
-    };
+    }
 
     this.calcScore = function () {
         
@@ -610,6 +587,38 @@ function Game(querySelector, options)
 
         return (scoreTot + bonus);  
     };
+
+    this.start = function() {
+                
+        intervalID = setInterval(function() { 
+ 
+            if(_self.run()) {
+                _self.draw();
+            }
+            
+        }, opts.intervalTime);
+
+    };
+
+
+    this.onWin = function(score){
+        alert('Your score is: ' + score);
+    };
+    
+    /*
+    this.onWin = function(){
+        scoreTot = this.calcScore();
+                
+        if (confirm('You won ! \n' + 'Your total score is : ' + scoreTot + '\n\n Would you play again ?') ){
+            
+            game.init(gameLevels[0])
+
+            game.start();
+            
+        }
+  
+    };
+    */
     
     this.endLevel = function () {
       
@@ -626,7 +635,7 @@ function Game(querySelector, options)
                 
                 window.localStorage.setItem('currentLevel', JSON.stringify(currLevel));  // Faire " currentLevel +1 " lors de la récup de cette valeur
                 window.localStorage.setItem('scoreTot', JSON.stringify(scoreTot));
-          
+        
             }
             
             return true;
@@ -636,14 +645,12 @@ function Game(querySelector, options)
     };
     
     this.run = function() {     
-   
-
         
         if (applesEaten >= opts.obstacles.apple) {
             this.pause();
 
-             if (currLevel >= gameLevels.length) {
-                 this.onWin()
+            if (currLevel >= gameLevels.length) {
+                this.onWin()
                 endLevelTime = new Date ();
                 this.calcScore();
                 this.winner();
@@ -654,19 +661,18 @@ function Game(querySelector, options)
                 
                 currLevel++;
                                     
-        this.init(gameLevels[currLevel]);
+                this.init(gameLevels[currLevel]);
 
-        this.start();
-
-                
+                this.start();
                 return true;
             }
-
-            
             
             return false;
         }
         
+
+
+
         /**************************************************************************
         *                                                                         *
         *   Dynamique de jeu                                                      *
@@ -724,11 +730,8 @@ function Game(querySelector, options)
 
                 snake.eat();
                 eating = true;
-//                applesEaten++;           // On ne comptabilise pas la pomme comme une pomme du niveau à manger
-                
-                //score -->  +5 à chaque extra pomme mangée
                 scoreTot+=5;
-                
+                applesEaten++;
                 return false;
             }
 
@@ -746,6 +749,7 @@ function Game(querySelector, options)
             addApple(placeApple(),applesExtraTime);
         }
 
+        return true;
     };
 
     function snakeOutOfGrid() {
@@ -815,11 +819,7 @@ function Game(querySelector, options)
         }, 40);
       
     };
-    
-    
-    
     this.init(options);
-
 }
 
 // Méthode test la position d'un objet par rapport au serpent
