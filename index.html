@@ -46,9 +46,6 @@
 						<a href="#hall-of-fame">Hall of Fame</a>
 					</li>
 					<li>
-						<a href="#help">Help</a>
-					</li>
-					<li>
 						<a href="#tutorial">Tutorial</a>
 					</li>
 					<li>
@@ -70,7 +67,25 @@
 						<a href="#game" class="main-button" id="next-level">Next level</a>
 					</li>
 					<li>
-						<a href="#game" class="replay-level">Replay</a>
+						<a href="#home">Home</a>
+					</li>
+				</ul>
+			</nav>
+		</section>
+		
+
+		<section class="page" data-page="winner" style="display:none;">
+			<header>
+				<h1>Game completed</h1>
+			</header>
+			<p>Congratulations you won with <strong class="score"></strong> points</p>
+			<nav>
+				<ul>
+					<li>
+						<a href="#hall-of-fame" class="main-button">Hall of fame</a>
+					</li>
+					<li>
+						<a href="#game">New game</a>
 					</li>
 					<li>
 						<a href="#home">Home</a>
@@ -80,7 +95,7 @@
 		</section>
 		
 
-		<section class="page" data-page="score" style="display:none;">
+		<section class="page" data-page="game-over" style="display:none;">
 			<header>
 				<h1>Game over</h1>
 			</header>
@@ -119,21 +134,6 @@
 				<h1>Hall of Fame</h1>
 			</header>
 			<p>List of top 10</p>
-			<nav>
-				<ul>
-					<li>
-						<a href="#home" class="main-button">Home</a>
-					</li>
-				</ul>
-			</nav>
-		</section>
-
-
-		<section class="page" data-page="help" style="display:none;">
-			<header>
-				<h1>Help</h1>
-			</header>
-			<p>Help text</p>
 			<nav>
 				<ul>
 					<li>
@@ -250,8 +250,15 @@
 
 		<script src="ressources/js/jquery-3.5.0.min.js"></script>
 		<script src="ressources/js/navigation.js"></script>
+
+		<!-- Fichiers du jeu -->
+		<script src="game/tools.js"></script>
+		<script src="game/snake.js"></script>
+		<script src="game/apple.js"></script>
+
 		<script src="game/game.js"></script>
 
+		<!-- Application du jeu (site) -->
 		<script src="ressources/js/app.js"></script>
         <script src="ressources/js/geoLocation.js"></script>
        

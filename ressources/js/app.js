@@ -10,15 +10,53 @@ async function initApp()
     
     let config = await configPromise;
 
-    let currLevel = 0;
+    let currLevel = window.localStorage.getItem('currentLevel');
+    if (currLevel === null) {
+        currLevel = 0;
+    }
 
-    let game = new Game('#zone', config.gameLevels[0]);
+    let scoreTot = window.localStorage.getItem('scoreTot');
+    if (scoreTot === null) {
+        scoreTot = 0;
+    }
+
+
+    let game = new Game('#zone', config.gameLevels[0], scoreTot);
     var navigation = new Navigation();
     
-    game.onWin = function() {
-        navigation.go('score');
-        return;
+    game.onWin = function(score) {
+        currLevel++;
+
+
+        if (currLevel >= config.gameLevels.length) {
+            let hallOfFameStored = window.localStorage.getItem('hallOfFame');
+            let hallOfFame = [];
+
+            if (hallOfFameStored !== null) {
+                hallOfFame = JSON.parse(hallOfFameStored);
+            }
+
+            hallOfFame.push(score);
+            window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
+
+            window.localStorage.setItem('currentLevel', 0);
+            window.localStorage.setItem('scoreTot', 0);
+
+            game.init(config.gameLevels[0], true);
+
+            navigation.go('winner');
+        }
+        else {
+            window.localStorage.setItem('currentLevel', currLevel);
+            window.localStorage.setItem('scoreTot', score);
+            game.init(config.gameLevels[currLevel]);
+            navigation.go('score');
+        }
     };
+
+    game.onGameOver = function() {
+        navigation.go('game-over');
+    }
     
     
     
@@ -52,21 +90,18 @@ async function initApp()
      */
     $('#next-level').click(function(e){
         e.preventDefault();
-        currLevel++;
-        if (currLevel >= config.gameLevels.length) {
-            // alert('You won !');
-        }
     
         game.init(config.gameLevels[currLevel]);
         navigation.go('game');
     });
     
+    /*
     $('#replay-level').click(function(e){
         e.preventDefault();
     
         game.init(config.gameLevels[currLevel]);
         navigation.go('game');
-    });
+    }); */
 
 
 
