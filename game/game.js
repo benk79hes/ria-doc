@@ -405,12 +405,12 @@ function Apple(x, y, snake, canvas)
 
 function deepAssign(o1, o2) {
     for (o in o2) {
- /*       if (typeof o2[o] === 'object' && typeof o1[o] !== 'undefined') {
+        if (typeof o2[o] === 'object' && typeof o1[o] !== 'undefined') {
             deepAssign(o1[o], o2[o]);
         }
         else {
- */           o1[o] = o2[o];
- //       }
+            o1[o] = o2[o];
+        }
     }
 }
 
@@ -419,13 +419,14 @@ function deepAssign(o1, o2) {
 function Game(querySelector, options)
 {
     let opts = {
+        levelName: 'First level',
         intervalTime:  300,
         addObstacleTimeout: 500,
         obstacles: {
             'apple': 1,
             'teacher': 0,
         }
-    };
+    }
 
     //var canvas = document.getElementById("zone");
     var _self = this;
@@ -456,7 +457,6 @@ function Game(querySelector, options)
     let scoreTot = 0;
     let beginingLevelTime = new Date();
     let endLevelTime;
-    let noEatenApple;
 
     let backToWork = false;
 
@@ -470,7 +470,7 @@ function Game(querySelector, options)
         apples = [];
         applesExtraTime = [];
         timeout = 0;        
-        noEatenApple = gameLevels[currLevel].opts.obstacles.apple;
+
         snake = new Snake(Math.trunc(gameGridWidth / 2), Math.trunc(gameGridHeight / 2), 3);
         addApple(placeApple(), apples);    
 
@@ -554,10 +554,14 @@ function Game(querySelector, options)
 
     this.onGameOver = function(){
 
-        alert('G A M E  O V E R !!!');
-            this.init(gameLevels[0]);
+        if (confirm ("Game Over !!!!!\n Voulez-vous recommencer ?")) {
+            this.init(options);
             scoreTot = 0;
             this.start();
+        }
+        else {
+            
+        }
         
     };
 
@@ -613,14 +617,14 @@ function Game(querySelector, options)
         
         scoreTot = this.calcScore();
         
-        if (applesEaten == gameLevels[currLevel].opts.obstacles.apple) {
+        if (applesEaten == opts.obstacles.apple) {
             
             alert('You have been eated ' + applesEaten + ' apples. \n You could eat ' + applesTotProd + ') \n' + 'Your score with Time bonus is : ' + scoreTot );
             
             // On auvegarde les données de ce niveau au cas où le joueur veuille revenir à ce niveau à la fin du niveau suivant
             if(!confirm ('Would you continue ?')){
                 
-                window.localStorage.setItem('currentLevel', JSON.stringify(gameLevels[currLevel]));  // Faire " this.newLevel() " lors de la récup de cette valeur
+                window.localStorage.setItem('currentLevel', JSON.stringify(currLevel));  // Faire " currentLevel +1 " lors de la récup de cette valeur
                 window.localStorage.setItem('scoreTot', JSON.stringify(scoreTot));
           
             }
@@ -631,38 +635,11 @@ function Game(querySelector, options)
         return false;
     };
     
-    this.newLevel = function () {
-        
-        let finishedLevel = gameLevels[currLevel];
-        
-         currLevel++;
-        
-        opts = {
-            intervalTime:  finishedLevel.opts.intervalTime / (1.2),
-            addObstacleTimeout: finishedLevel.opts.addObstacleTimeout / (1.2),
-            obstacles: {
-                'apple':finishedLevel.opts.obstacles.apple +=2,
-                'teacher': finishedLevel.opts.obstacles.teacher +=2,
-            },
-            
-        };
-            gameLevels[currLevel] =
-                {
-                    levelName: gameLevels[currLevel].levelName,
-                    opts,                
-                };
-          
-//        gameLevels.push(opts);
-        this.init(gameLevels[currLevel]);
-
-        this.start();
-    }
-    
-    this.run = function(opts,option) {     
+    this.run = function() {     
    
 
         
-        if (applesEaten >= gameLevels[currLevel].opts.obstacles.apple) {
+        if (applesEaten >= opts.obstacles.apple) {
             this.pause();
 
              if (currLevel >= gameLevels.length) {
@@ -675,8 +652,13 @@ function Game(querySelector, options)
 
             if (this.endLevel()) {
                 
-               this.newLevel();
-              
+                currLevel++;
+                                    
+        this.init(gameLevels[currLevel]);
+
+        this.start();
+
+                
                 return true;
             }
 
@@ -723,7 +705,6 @@ function Game(querySelector, options)
                 snake.eat();
                 eating = true;
                 applesEaten++;
-                noEatenApple--;
  //               apples.splice(1,1);  // on enlève du tableau la pomme mangé (pour données localStorage)
                 
                 //Gestion du score primaire  -->  +10 à chaque pomme mangée (bonus en fonction du temps en fin de partie)
@@ -754,7 +735,7 @@ function Game(querySelector, options)
             return true;
         });
 
-        if (eating && applesEaten < gameLevels[currLevel].opts.obstacles.apple && noEatenApple!=0 ) {
+        if (eating && applesEaten < opts.obstacles.apple && apples.length < opts.obstacles.apple) {
             
             setTimeout(addApple(placeApple(),apples), 1000);
         
@@ -813,14 +794,6 @@ function Game(querySelector, options)
          ctx.font = '16px Arial';
          ctx.fillStyle = '#fff';
          ctx.fillText('Score: ' + scoreTot, 5, 20);
-        
-        /**
-        * Editer le score
-        **/
-         // Affichage du score
-         ctx.font = '16px Arial';
-         ctx.fillStyle = '#fff';
-         ctx.fillText('Pomme rouge à manger : ' + noEatenApple, 500, 20);
 
         /**
          * Dessiner la pomme 
@@ -845,7 +818,7 @@ function Game(querySelector, options)
     
     
     
-    this.init(gameLevels[0]);
+    this.init(options);
 
 }
 
