@@ -42,7 +42,10 @@ async function initApp()
                 hallOfFame = JSON.parse(hallOfFameStored);
             }
 
-            hallOfFame.push(score);
+            hallOfFame.push({
+                nickname: '',
+                score: score
+            });
             window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
 
             window.localStorage.setItem('currentLevel', 0);
@@ -76,6 +79,7 @@ async function initApp()
     };
 
     pageGame.onBeforeShow = function() {
+
         if (gameRegistrationStep == 0) {
             navigation.go('register');
             return false;
@@ -85,6 +89,8 @@ async function initApp()
             navigation.go('choose-target');
             return false;
         }
+
+        return true;
     };
     
     pageGame.onShow = function(){
@@ -156,9 +162,34 @@ async function initApp()
 
         window.localStorage.setItem('nickname', nickname);
         window.localStorage.setItem('location', location);
+
+        gameRegistrationStep = 1;
+        navigation.go('choose-target');
         // Ok, formulaire valide
         // ...
     });
+
+
+    $('#select-target-button').click(function(e){
+        e.preventDefault();
+
+        // Check qu'on a choisi un prof
+        // Affecter le nom de l'image à la variable
+
+        // si pas de prof choisi
+        let target = '' // image du prof
+
+        // if (! target) {
+        //     return false;
+        // }
+
+
+        gameRegistrationStep = 2;
+
+        // window.localStorage.setItem('target', target);
+        navigation.go('game');
+    });
+
 
 
     /**
