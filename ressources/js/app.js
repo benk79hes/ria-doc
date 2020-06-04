@@ -10,16 +10,89 @@ async function initApp()
     
     let config = await configPromise;
 
-    let currLevel = 0;
+    let currLevel = window.localStorage.getItem('currentLevel');
+    if (currLevel === null) {
+        currLevel = 0;
+    }
 
-    let game = new Game('#zone', config.gameLevels[0]);
+    let scoreTot = window.localStorage.getItem('scoreTot');
+    if (scoreTot === null) {
+        scoreTot = 0;
+    }
+
+    let game = new Game('#zone', config.gameLevels[0], scoreTot);
     var navigation = new Navigation();
     
-    game.onWin = function() {
-        navigation.go('score');
-        return;
+    game.onWin = function(score) {
+        currLevel = window.localStorage.getItem('currentLevel');
+
+        if (currLevel >= config.gameLevels.length) {
+            let hallOfFameStored = window.localStorage.getItem('hallOfFame');
+            let hallOfFame = [];
+
+            if (hallOfFameStored !== null) {
+                hallOfFame = hallOfFameStored;
+            }
+
+            hallOfFame.push(score);
+            window.localStorage.setItem('hallOfFame', hallOfFame);
+
+            window.localStorage.setItem('currentLevel', 0);
+            window.localStorage.setItem('scoreTot', 0);
+
+            game.init(game.config.gameLevels[0],false);
+                        
+            navigation.go('winner');
+        }
+        else {
+            window.localStorage.setItem('currentLevel', JSON.stringify(currLevel));
+            window.localStorage.setItem('scoreTot', JSON.stringify(score));
+            game.init(config.gameLevels[currLevel]);
+            
+            navigation.go('score');
+        }
+    };
+
+    game.onGameOver = function() { 
+        
+        currLevel = JSON.parse(window.localStorage.getItem('currentLevel'));
+        scoreTot = JSON.parse(window.localStorage.getItem('scoreTot'));
+
+        console.log("curLevel" + currLevel);
+        console.log("scoreTot" + "SCOREscoreSCOREscore");
+        
+        
+        navigation.go('game-over');
     };
     
+    
+    displayLevelName = function(){
+
+        setTimeout(function() {
+            document.getElementById('tempo').innerHTML = game.opts.levelName;
+        }, 500);
+      
+   };
+    
+    
+    game.onResetAll = function() {
+        
+        /*
+            window.localStorage.setItem('currentLevel', 0);
+            window.localStorage.setItem('scoreTot', 0);
+
+            game.init(config.gameLevels[0],false);
+        */
+        
+        window.localStorage.removeItem('currentLevel');
+        window.localStorage.removeItem('scoreTot');
+
+        //game.init(config.gameLevels[0], true);
+        
+       // game = new Game('#zone', config.gameLevels[0], false);
+        
+         
+    };
     
     
     /**
@@ -27,49 +100,75 @@ async function initApp()
      */
     let pageGame = new Page();
     
+    
+    
+    //document.getElementById('tempo').innerHTML = opts.levelName;
+
     pageGame.onInit = function(){
         initKeyboardController(game);
+      
+ /*       setTimeout(function() {
+            console.log("game level : " + game.opts.levelName);
+            document.getElementById('tempo').innerHTML = game.opts.levelName;
+        }, 500);    };
+ */   
+
     };
-    pageGame.onBeforeShow = function() {
     
+    pageGame.onBeforeShow = function() {
     };
+    
     pageGame.onShow = function(){
         // Change behaviour depending on game state
+ 
+/*        setTimeout(function() {
+            console.log("game level : " + game.opts.levelName);
+            document.getElementById('tempo').innerHTML = game.opts.levelName;
+        }, 500);
+*/      
+        displayLevelName();
+        
         game.start();
+
     };
     
     pageGame.onBeforeHide = function(){
+                
         game.pause();
+
     };
     
     navigation.addPage('game', pageGame);
-    
-    
-    
-    
+        
+       
     /**
      * Level completed page
      */
     $('#next-level').click(function(e){
         e.preventDefault();
-        currLevel++;
-        if (currLevel >= config.gameLevels.length) {
-            // alert('You won !');
-        }
     
-        game.init(config.gameLevels[currLevel]);
+        game.init(config.gameLevels[currLevel+1]);
         navigation.go('game');
     });
-    
+       
     $('#replay-level').click(function(e){
         e.preventDefault();
-    
-        game.init(config.gameLevels[currLevel]);
+        
+        game.init(game.config.gameLevels[currLevel], );
+
         navigation.go('game');
-    });
+    }); 
 
-
-
+    $('#reset-all').click(function(e){
+        e.preventDefault();
+    
+        game.onResetAll();
+        game.init(config.gameLevels[0], true);
+        
+        navigation.go('game');        
+    }); 
+    
+    
     /**
      * Gestion du drag and drop
      */

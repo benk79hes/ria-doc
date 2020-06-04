@@ -74,7 +74,7 @@ function Navigation()
 
     $(document).ready(function(){
         $('section.page').removeAttr('style')
-        .fadeOut(0);
+                         .fadeOut(0);
     
         for (let page in _nav.pages) {
             console.log(page);

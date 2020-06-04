@@ -5,8 +5,8 @@
             "intervalTime":  300,
             "addObstacleTimeout": 50,
             "obstacles": {
-                "apple": 1,
-                "teacher": 0
+                "apple": 2,
+                "teacher": 1
             }
         },
         {
@@ -15,17 +15,19 @@
             "addObstacleTimeout": 50,
             "obstacles": {
                 "apple": 2,
-                "teacher": 0
+                "teacher": 4
             }
         },
         {
-            "levelName": "First level",
+            "levelName": "Third level",
             "intervalTime":  200,
-            "addObstacleTimeout": 50,
+            "addObstacleTimeout": 100,
             "obstacles": {
-                "apple": 6,
-                "teacher": 0
+                "apple": 3,
+                "teacher": 4
             }
         }
     ]
+    
+   
 }
