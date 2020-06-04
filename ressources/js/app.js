@@ -36,10 +36,9 @@ async function initApp()
 
         if (currLevel >= config.gameLevels.length) {
 
-<<<<<<< HEAD
             addHallOfFame();
   //          window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
-=======
+
             if (hallOfFameStored !== null) {
                 hallOfFame = JSON.parse(hallOfFameStored);
             }
@@ -49,7 +48,6 @@ async function initApp()
                 score: score
             });
             window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
->>>>>>> e9efb8780c1010ea48a0902c213ecba59f0b2804
 
             window.localStorage.setItem('currentLevel', 0);
             window.localStorage.setItem('scoreTot', 0);
@@ -84,6 +82,18 @@ async function initApp()
     };
 
     pageGame.onBeforeShow = function() {
+
+        if (gameRegistrationStep == 0) {
+            navigation.go('register');
+            return false;
+        }
+
+        if (gameRegistrationStep == 1) {
+            navigation.go('choose-target');
+            return false;
+        }
+
+        return true;
     };
     
     pageGame.onShow = function(){
@@ -155,8 +165,7 @@ async function initApp()
 
                 let colonne4 = ligne.insertCell(3);
                 colonne4.innerHTML += hallOfFame[i].location;
-
-             };
+             }
 
          }
 
@@ -177,16 +186,17 @@ async function initApp()
                                 location : windows.localStorage.setItem('location')
                             },
                         );
-                    hallOfFame.foreach(fame => 
-                      fame.foreach(element =>
-                            if (element === null){
-                                hallOfFame.splice(fame.findIndex,1);
-                            });
-                       );
+                    hallOfFame.foreach(let fame => 
+                        for(element of fame) {
+                            if (element === null | element ==='undefined'){                                                       
+                                hallOfFame.splice(hallOfFame.findIndex(fame),1);
+                            }
+                        }
+                    );
                 }
                 else {
                     hallOfFame = JSON.parse(hallOfFameStored);
-
+ 
                     hallOfFame.push(
                         nickName : windows.localStorage.setItem('nickName'),
                         score : windows.localStorage.setItem('scoreTot'),
@@ -200,9 +210,7 @@ async function initApp()
 
     }
 
-<<<<<<< HEAD
     
-=======
     let registrationPage = new Page();
     registrationPage.onInit = function(){
         $('#registration-form [name=location]')
@@ -268,7 +276,6 @@ async function initApp()
 
 
 
->>>>>>> e9efb8780c1010ea48a0902c213ecba59f0b2804
     /**
      * Gestion du drag and drop
      */
