@@ -118,6 +118,7 @@ async function initApp()
             x.innerHTML = "Geolocation is not supported by this browser.";
         }
     };
+    navigation.addPage('registration', registrationPage);
 
 
     /**
