@@ -105,6 +105,21 @@ async function initApp()
 
 
 
+    let registrationPage = new Page();
+    registrationPage.onInit = function(){
+        $('#registration-form [name=location]')
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position){
+                $('#registration-form [name=location]').val("Latitude: " + position.coords.latitude + 
+                "<br>Longitude: " + position.coords.longitude);
+            });
+        }
+        else { 
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    };
+
+
     /**
      * Gestion du drag and drop
      */
@@ -122,6 +137,7 @@ async function initApp()
 
     $('#avatar-control').on('drop', function(e){
         files = e.originalEvent.dataTransfer.files;
+        console.log(files);
         document.getElementById('avatar-input').files = files;
     });
 
