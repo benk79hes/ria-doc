@@ -10,6 +10,12 @@ async function initApp()
     
     let config = await configPromise;
 
+    let gameRegistrationStep = window.localStorage.getItem('registration');
+    if (gameRegistrationStep === null) {
+        gameRegistrationStep = 0;
+    } 
+
+
     let currLevel = window.localStorage.getItem('currentLevel');
     if (currLevel === null) {
         currLevel = 0;
@@ -30,8 +36,20 @@ async function initApp()
 
         if (currLevel >= config.gameLevels.length) {
 
+<<<<<<< HEAD
             addHallOfFame();
   //          window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
+=======
+            if (hallOfFameStored !== null) {
+                hallOfFame = JSON.parse(hallOfFameStored);
+            }
+
+            hallOfFame.push({
+                nickname: '',
+                score: score
+            });
+            window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
+>>>>>>> e9efb8780c1010ea48a0902c213ecba59f0b2804
 
             window.localStorage.setItem('currentLevel', 0);
             window.localStorage.setItem('scoreTot', 0);
@@ -64,8 +82,8 @@ async function initApp()
     pageGame.onInit = function(){
         initKeyboardController(game);
     };
+
     pageGame.onBeforeShow = function() {
-    
     };
     
     pageGame.onShow = function(){
@@ -182,7 +200,75 @@ async function initApp()
 
     }
 
+<<<<<<< HEAD
     
+=======
+    let registrationPage = new Page();
+    registrationPage.onInit = function(){
+        $('#registration-form [name=location]')
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position){
+                $('#registration-form [name=location]').val("Latitude: " + position.coords.latitude + 
+                    ", Longitude: " + position.coords.longitude);
+            });
+        }
+    };
+    
+    navigation.addPage('registration', registrationPage);
+
+
+    $('#register-button').click(function(e){
+        e.preventDefault();
+
+        $('#registration-form input').removeClass('error');
+        console.log($('#registration-form input'));
+        
+        let nickname = $('[name=nickname]').val();
+        console.log(nickname);
+        let location = $('[name=location]').val();
+
+        if (!nickname) {
+            $('[name=nickname]').addClass('error');
+            return false;
+        }
+        if (!location) {
+            $('[name=location]').addClass('error');
+            return false;
+        }
+
+        window.localStorage.setItem('nickname', nickname);
+        window.localStorage.setItem('location', location);
+
+        gameRegistrationStep = 1;
+        navigation.go('choose-target');
+        // Ok, formulaire valide
+        // ...
+    });
+
+
+    $('#select-target-button').click(function(e){
+        e.preventDefault();
+
+        // Check qu'on a choisi un prof
+        // Affecter le nom de l'image à la variable
+
+        // si pas de prof choisi
+        let target = '' // image du prof
+
+        // if (! target) {
+        //     return false;
+        // }
+
+
+        gameRegistrationStep = 2;
+
+        // window.localStorage.setItem('target', target);
+        navigation.go('game');
+    });
+
+
+
+>>>>>>> e9efb8780c1010ea48a0902c213ecba59f0b2804
     /**
      * Gestion du drag and drop
      */
@@ -200,6 +286,7 @@ async function initApp()
 
     $('#avatar-control').on('drop', function(e){
         files = e.originalEvent.dataTransfer.files;
+        console.log(files);
         document.getElementById('avatar-input').files = files;
     });
 

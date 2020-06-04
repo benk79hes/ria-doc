@@ -58,7 +58,9 @@ function Navigation()
         
         if (name in _nav.pages) {
             if (_nav.pages[name].onBeforeShow() === false){
+                console.log('Can not show');
                 canshow = false;
+                return;
             }
         }
 

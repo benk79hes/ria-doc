@@ -29,6 +29,8 @@ function Game(querySelector, options, scoreTot)
     };
     var ctx = canvas.getContext('2d');
 
+    var eatSound = document.getElementById('eatSound'); //!!!!!!!!MUSIC IS HERE
+
     
     var intervalID = null;
     var gridSize = 20
@@ -244,6 +246,7 @@ function Game(querySelector, options, scoreTot)
         }
 
         let eating = false;
+        let eatSoundFlag = true;
         apples = apples.filter((apple) => {
           
             if (_self.snake.x == apple.x && _self.snake.y == apple.y) {
@@ -253,7 +256,14 @@ function Game(querySelector, options, scoreTot)
                 applesEaten++;
                 noEatenApple--;
                 scoreLevel+=10;
-                
+
+                if (eatSoundFlag) {               //!!!!!!!!MUSIC IS HERE
+                    eatSound.pause();
+                    eatSound.currentTime = 0;
+                    eatSound.play();
+                    eatSoundFlag=false;         
+                }
+
                 return false;
             }
 
