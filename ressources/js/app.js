@@ -10,6 +10,12 @@ async function initApp()
     
     let config = await configPromise;
 
+    let gameRegistrationStep = window.localStorage.getItem('registration');
+    if (gameRegistrationStep === null) {
+        gameRegistrationStep = 0;
+    } 
+
+
     let currLevel = window.localStorage.getItem('currentLevel');
     if (currLevel === null) {
         currLevel = 0;
@@ -68,9 +74,19 @@ async function initApp()
     pageGame.onInit = function(){
         initKeyboardController(game);
     };
+
     pageGame.onBeforeShow = function() {
-    
+        if (gameRegistrationStep == 0) {
+            navigation.go('register');
+            return false;
+        }
+
+        if (gameRegistrationStep == 1) {
+            navigation.go('choose-target');
+            return false;
+        }
     };
+    
     pageGame.onShow = function(){
         // Change behaviour depending on game state
         game.start();
@@ -111,14 +127,38 @@ async function initApp()
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position){
                 $('#registration-form [name=location]').val("Latitude: " + position.coords.latitude + 
-                "<br>Longitude: " + position.coords.longitude);
+                    ", Longitude: " + position.coords.longitude);
             });
         }
-        else { 
-            x.innerHTML = "Geolocation is not supported by this browser.";
-        }
     };
+    
     navigation.addPage('registration', registrationPage);
+
+
+    $('#register-button').click(function(e){
+        e.preventDefault();
+
+        $('#registration-form input').removeClass('error');
+        console.log($('#registration-form input'));
+        
+        let nickname = $('[name=nickname]').val();
+        console.log(nickname);
+        let location = $('[name=location]').val();
+
+        if (!nickname) {
+            $('[name=nickname]').addClass('error');
+            return false;
+        }
+        if (!location) {
+            $('[name=location]').addClass('error');
+            return false;
+        }
+
+        window.localStorage.setItem('nickname', nickname);
+        window.localStorage.setItem('location', location);
+        // Ok, formulaire valide
+        // ...
+    });
 
 
     /**
