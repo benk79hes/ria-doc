@@ -24,7 +24,7 @@ function Game(querySelector, options, scoreTot)
         addObstacleTimeout: 500,
         obstacles: {
             'apple': 1,
-            'teacher': 0,
+            'teacher':4,
         }
     };
     var ctx = canvas.getContext('2d');
@@ -39,16 +39,18 @@ function Game(querySelector, options, scoreTot)
     var apples;
 
     var obstacles;
-    var timeout; 
     var apple;
     var obstacleLength;
     
     var applesExtraTime;
     
+    let timeout =0; 
     let elapseTime = 0;
-    let beginingLevelTime = new Date();
+    let beginingLevelTime = Date.now ();
     let endLevelTime;
     let scoreLevel = 0;
+    let noEatenApple;
+    let applesBonus = 0;
 
     let backToWork = false;
 
@@ -65,10 +67,12 @@ function Game(querySelector, options, scoreTot)
         elapseTime = 0;
         applesTotProd = 0;
         applesEaten = 0;
+        applesBonus = 0;
         apples = [];
         applesExtraTime = [];
         timeout = 0;
         scoreLevel = 0;
+        noEatenApple = opts.obstacles.apple;
         
         if (resetScore) {
             scoreTot = 0;
@@ -101,7 +105,7 @@ function Game(querySelector, options, scoreTot)
         }
         
         apple = new Apple(randomX, randomY, _self);        
-        elapseTime = new Date () - beginingLevelTime;
+        elapseTime = Date.now () - beginingLevelTime;
 
         table.push(apple);
         applesTotProd++;
@@ -157,7 +161,6 @@ function Game(querySelector, options, scoreTot)
     this.onPause = function(){};
 
 
-
     this.calcScore = function () {
         
         let playerTimeResult;
@@ -193,7 +196,6 @@ function Game(querySelector, options, scoreTot)
         }, opts.intervalTime);
 
     };
-
     
     
     this.run = function() {     
@@ -201,7 +203,7 @@ function Game(querySelector, options, scoreTot)
         if (applesEaten >= opts.obstacles.apple) {
             this.pause();
 
-            endLevelTime = new Date ();
+            endLevelTime = Date.now ();
             scoreTot += this.calcScore();
 
             this.onWin(scoreTot);
@@ -220,7 +222,7 @@ function Game(querySelector, options, scoreTot)
       
         // Mise en mouvement du serpent
         _self.snake.move();
-
+ 
         // Mise en mouvement de la pomme
         if (apples.length > 0) {
             apples.forEach(apple => {
@@ -249,6 +251,7 @@ function Game(querySelector, options, scoreTot)
                 _self.snake.eat();
                 eating = true;
                 applesEaten++;
+                noEatenApple--;
                 scoreLevel+=10;
                 
                 return false;
@@ -264,7 +267,7 @@ function Game(querySelector, options, scoreTot)
                 _self.snake.eat();
                 eating = true;
                 scoreLevel+=5;
-                applesEaten++;
+                applesBonus++;
                 return false;
             }
 
@@ -277,11 +280,13 @@ function Game(querySelector, options, scoreTot)
         
         }
 
-        if (timeout++ > 100) {
+       
+        if (timeout++ > addObstacleTimeout && opts.teacher > 0 ) {
             timeout = 0 ;
+            opts.teacher--;
             addApple(applesExtraTime);
         }
-
+console.log(timeout);
         return true;
     };
 
@@ -359,6 +364,23 @@ function Game(querySelector, options, scoreTot)
          ctx.font = '16px Arial';
          ctx.fillStyle = '#fff';
          ctx.fillText('Score: ' + scoreTot, 5, 20);
+        
+        /**
+        * Editer le nombre de pomme
+        **/
+        // Affichage du score
+        ctx.font = '16px Arial';
+        ctx.fillStyle = '#fff';
+        ctx.fillText('To win level you have eat : ' + noEatenApple + ' red apple', 500, 20);
+        
+        /**
+        * Editer le nombre de pomme(s) bonus mangée(s)
+        **/
+        // Affichage du score
+        ctx.font = '16px Arial';
+        ctx.fillStyle = '#fff';
+        ctx.fillText('Apple bonus (blue) eaten : ' + applesBonus, 500, 50);
+        
 
         /**
          * Dessiner la pomme 
@@ -374,8 +396,16 @@ function Game(querySelector, options, scoreTot)
         
         applesExtraTime.forEach(apple => {
             ctx.beginPath();
-            ctx.fillStyle="#FF2550";
-            ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
+    //        ctx.fillStyle="blue";
+            var imgProf = new Image();
+            
+            imgProf.src = 'Images/' + (~~(Math.random()*3)+1).toString + '.jpg';
+            
+            imgProf.onload = function(){
+                ctx.drawImage(imgProf, apple.x * gridSize, apple.y * gridSize);
+            }
+            
+//            ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
             ctx.closePath();
         }, 40);
       
