@@ -63,6 +63,8 @@ function Game(querySelector, options, scoreTot)
     _self.gameGridHeight = canvas.height / gridSize;
     _self.snake = null;
 
+    scoreTot = scoreTot || 0;
+
     this.init = function(options, resetScore) {
         ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
