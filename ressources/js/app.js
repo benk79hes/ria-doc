@@ -267,27 +267,6 @@ async function initApp()
         navigation.go('choose-target');
     });
    
-    
-    $('#select-target-button').click(function(e){
-        e.preventDefault();
-
-        // Check qu'on a choisi un prof
-        // Affecter le nom de l'image à la variable
-
-        // si pas de prof choisi
-        let target = '' // image du prof
-
-        // if (! target) {
-        //     return false;
-        // }
-
-
-        setRegistrationStep(2);
-
-        // localStorage.setItem('target', target);
-        navigation.go('game');
-    });
-
 
 
     /**
@@ -301,6 +280,8 @@ async function initApp()
         ev.preventDefault();
         
         let data = ev.originalEvent.dataTransfer.getData("text");
+
+        let originalParent = document.getElementById(data).parentNode;
 
         ev.target.appendChild(document.getElementById(data));
 
@@ -322,11 +303,13 @@ async function initApp()
             console.log(imgProf);
             console.log(game);
             navigation.go('game');
+            setTimeout(function(){
+                originalParent.appendChild(document.getElementById(data));
+            }, 1000);
         }
     });
 
     $('.draggable').on('dragstart', function(ev){
-        // console.log(ev);
         ev.originalEvent.dataTransfer.setData("text", ev.target.id);
     });
 
