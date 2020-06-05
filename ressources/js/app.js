@@ -39,7 +39,7 @@ async function initApp()
         currLevel = 0;
     }
 
-    let scoreTot = localStorage.getItem('scoreTot');
+    let scoreTot = parseInt(localStorage.getItem('scoreTot'));
     if (scoreTot === null) {
         scoreTot = 0;
     }
@@ -50,6 +50,10 @@ async function initApp()
     
     game.onWin = function(score) {
         currLevel++;
+        let resetScore = false;
+        let goTo = 'score';
+
+
         
         if (currLevel >= config.gameLevels.length) {
             let hallOfFameStored = localStorage.getItem('hallOfFame');
@@ -73,19 +77,32 @@ async function initApp()
 
 
             localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
-            localStorage.setItem('currentLevel', 0);
+
+
+            currLevel = 0;
+            score = 0;
+            resetScore = true;
+            goTo = 'winner';
+            setRegistrationStep(0)
+            
+            /* localStorage.setItem('currentLevel', 0);
             localStorage.setItem('scoreTot', 0);
 
             game.init(config.gameLevels[0], true);
 
-            navigation.go('winner');
+            navigation.go('winner'); */
         }
         else {
-            localStorage.setItem('currentLevel', currLevel);
+            /* localStorage.setItem('currentLevel', currLevel);
             localStorage.setItem('scoreTot', score);
             game.init(config.gameLevels[currLevel]);
-            navigation.go('score');
+            navigation.go('score'); */
         }
+
+        localStorage.setItem('currentLevel', currLevel);
+        localStorage.setItem('scoreTot', score);
+        game.init(config.gameLevels[currLevel]);
+        navigation.go(goTo);
     };
 
     game.onGameOver = function() {
@@ -93,7 +110,7 @@ async function initApp()
   //      currLevel = window.localStorage.getItem('currentLevel');
   //      scoreTot = window.localStorage.getItem('scoreTot');
 
-        game.init(config.gameLevels[currLevel]);
+        game.init(config.gameLevels[currLevel], resetScore);
         navigation.go('game-over');
     }
     
@@ -129,7 +146,6 @@ async function initApp()
         
         imgProf.onload = function(){
             game.setTargetImage(imgProf);
-            //ctx.drawImage(imgProf, apple.x * gridSize, apple.y * gridSize);
         }
 
         return true;
@@ -159,14 +175,8 @@ async function initApp()
         navigation.go('game');
     });
     
-    /*
-    $('#replay-level').click(function(e){
-        e.preventDefault();
-    
-        game.init(config.gameLevels[currLevel]);
-        navigation.go('game');
-    }); */
 
+    
     /**
      * Hall of Fame
      *
@@ -222,8 +232,10 @@ async function initApp()
     
     
     let registrationPage = new Page();
-    registrationPage.onInit = function(){
-        $('#registration-form [name=location]')
+    registrationPage.onShow = function(){
+        console.log('hello');
+        $('#registration-form [name=nickname]').val(localStorage.getItem('nickname'));
+        $('#registration-form [name=location]').val(localStorage.getItem('location'));
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position){
                 $('#registration-form [name=location]').val("Latitude: " + position.coords.latitude + 
@@ -232,7 +244,7 @@ async function initApp()
         }
     };
     
-    navigation.addPage('registration', registrationPage);
+    navigation.addPage('register', registrationPage);
 
 
     $('#register-button').click(function(e){

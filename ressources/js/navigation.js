@@ -55,6 +55,7 @@ function Navigation()
 
     this.showPage = function(name) {
         let canShow = true;
+        console.log('showPage', name);
         
         if (name in _nav.pages) {
             if (_nav.pages[name].onBeforeShow() === false){
@@ -67,6 +68,7 @@ function Navigation()
         if (canShow) {
             $('section.page[data-page=' + name + ']').fadeIn(500, function(){
                 if (name in _nav.pages) {
+                    console.log('show page', name);
                     _nav.pages[name].onShow();
                 }
             });
@@ -79,7 +81,7 @@ function Navigation()
                          .fadeOut(0);
     
         for (let page in _nav.pages) {
-            console.log(page);
+            console.log('init page', page);
             _nav.pages[page].onInit();
         }
     
