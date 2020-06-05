@@ -12,7 +12,11 @@
         {
             "levelName": "Second level",
             "intervalTime":  280,
+<<<<<<< Updated upstream
             "addObstacleTimeout": 50,
+=======
+            "addObstacleTimeout": 80,
+>>>>>>> Stashed changes
             "obstacles": {
                 "apple": 2,
                 "teacher": 4

@@ -649,6 +649,7 @@ function Game(querySelector, options)
         if (applesEaten >= opts.obstacles.apple) {
             this.pause();
 
+<<<<<<< Updated upstream
             if (currLevel >= gameLevels.length) {
                 this.onWin()
                 endLevelTime = new Date ();
@@ -666,6 +667,13 @@ function Game(querySelector, options)
                 this.start();
                 return true;
             }
+=======
+            endLevelTime = Date.now ();
+            scoreTot += (this.calcScore() - scoreLevel);
+//            scoreTot += this.calcScore();
+            
+            this.onWin(scoreTot);
+>>>>>>> Stashed changes
             
             return false;
         }
@@ -711,11 +719,25 @@ function Game(querySelector, options)
                 snake.eat();
                 eating = true;
                 applesEaten++;
+<<<<<<< Updated upstream
  //               apples.splice(1,1);  // on enlève du tableau la pomme mangé (pour données localStorage)
                 
                 //Gestion du score primaire  -->  +10 à chaque pomme mangée (bonus en fonction du temps en fin de partie)
                 scoreTot+=10;
                 
+=======
+                noEatenApple--;
+                scoreLevel+=10;
+                scoreTot += 10;
+
+                if (eatSoundFlag) {               //!!!!!!!!MUSIC IS HERE
+                    eatSound.pause();
+                    eatSound.currentTime = 0;
+                    eatSound.play();
+                    eatSoundFlag=false;         
+                }
+
+>>>>>>> Stashed changes
                 return false;
             }
 
@@ -730,8 +752,14 @@ function Game(querySelector, options)
 
                 snake.eat();
                 eating = true;
+<<<<<<< Updated upstream
                 scoreTot+=5;
                 applesEaten++;
+=======
+                scoreLevel+=5;
+                scoreTot += 5;
+                applesBonus++;
+>>>>>>> Stashed changes
                 return false;
             }
 
@@ -744,7 +772,12 @@ function Game(querySelector, options)
         
         }
 
+<<<<<<< Updated upstream
         if (timeout++ > 100) {
+=======
+       
+        if ((timeout++)%opts.addObstacleTimeout ==0 && opts.teacher > 0 ) {
+>>>>>>> Stashed changes
             timeout = 0 ;
             addApple(placeApple(),applesExtraTime);
         }
@@ -798,6 +831,34 @@ function Game(querySelector, options)
          ctx.font = '16px Arial';
          ctx.fillStyle = '#fff';
          ctx.fillText('Score: ' + scoreTot, 5, 20);
+<<<<<<< Updated upstream
+=======
+        
+        /**
+        * Editer le nombre de pomme
+        **/
+        // Affichage du score
+        ctx.font = '16px Arial';
+        ctx.fillStyle = '#fff';
+        ctx.fillText('To win level you have eat : ' + noEatenApple + ' red apple', 500, 20);
+        
+        /**
+        * Editer le nombre de pomme(s) bonus mangée(s)
+        **/
+        // Affichage du score
+        ctx.font = '16px Arial';
+        ctx.fillStyle = '#fff';
+        ctx.fillText('Apple bonus (blue) eaten : ' + applesBonus, 500, 50);
+        
+        /**
+         * Afficher le niveau/nombre total de niveau
+         *
+         */
+        ctx.font = '16px Arial';
+        ctx.fillStyle = '#fff';
+        ctx.fillText((opts.levelName), 310, 670);
+        
+>>>>>>> Stashed changes
 
         /**
          * Dessiner la pomme 

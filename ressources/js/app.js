@@ -23,12 +23,20 @@ async function initApp()
     let game = new Game('#zone', config.gameLevels[0], scoreTot);
     var navigation = new Navigation();
     
+<<<<<<< Updated upstream
     game.onWin = function(score) {
         currLevel = window.localStorage.getItem('currentLevel');
 
         if (currLevel >= config.gameLevels.length) {
             let hallOfFameStored = window.localStorage.getItem('hallOfFame');
             let hallOfFame = [];
+=======
+    game.onWin = function(score) {     
+        
+        if (currLevel >= config.gameLevels.length-1) {
+            let hallOfFameStored = localStorage.getItem('hallOfFame');
+            let hallOfFame;
+>>>>>>> Stashed changes
 
             if (hallOfFameStored !== null) {
                 hallOfFame = hallOfFameStored;
@@ -37,17 +45,34 @@ async function initApp()
             hallOfFame.push(score);
             window.localStorage.setItem('hallOfFame', hallOfFame);
 
+<<<<<<< Updated upstream
             window.localStorage.setItem('currentLevel', 0);
             window.localStorage.setItem('scoreTot', 0);
+=======
+            localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
+            
+            localStorage.setItem('currentLevel', 0);
+            localStorage.setItem('scoreTot', 0);
+            currLevel = 0;
+            
+            game.init(config.gameLevels[currLevel], true);
+>>>>>>> Stashed changes
 
             game.init(game.config.gameLevels[0],false);
                         
             navigation.go('winner');
         }
         else {
+<<<<<<< Updated upstream
             window.localStorage.setItem('currentLevel', JSON.stringify(currLevel));
             window.localStorage.setItem('scoreTot', JSON.stringify(score));
             game.init(config.gameLevels[currLevel]);
+=======
+            currLevel++;
+            localStorage.setItem('currentLevel', currLevel);
+            localStorage.setItem('scoreTot', score);
+            game.init(config.gameLevels[currLevel], false);
+>>>>>>> Stashed changes
             
             navigation.go('score');
         }
