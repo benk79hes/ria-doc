@@ -284,6 +284,7 @@ function Game(querySelector, options, scoreTot)
                 eating = true;
                 scoreLevel+=5;
                 applesBonus++;
+
                 if (eatSoundFlag) {               //!!!!!!!!MUSIC IS HERE
                     eatSound.pause();
                     eatSound.currentTime = 0;
@@ -385,7 +386,7 @@ function Game(querySelector, options, scoreTot)
          // Affichage du score
          ctx.font = '16px Arial';
          ctx.fillStyle = '#fff';
-         ctx.fillText('Score: ' + scoreTot, 5, 20);
+         ctx.fillText('Score: ' + (scoreTot + scoreLevel), 5, 20);
         
         /**
         * Editer le nombre de pomme
@@ -403,6 +404,13 @@ function Game(querySelector, options, scoreTot)
         ctx.fillStyle = '#fff';
         ctx.fillText('Apple bonus (blue) eaten : ' + applesBonus, 500, 50);
         
+        /**
+         * Afficher le niveau/nombre total de niveau
+         *
+         */
+        ctx.font = '16px Arial';
+        ctx.fillStyle = '#fff';
+        ctx.fillText(opts.levelName, 310, 670);
 
         /**
          * Dessiner la pomme 

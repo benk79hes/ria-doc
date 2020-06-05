@@ -101,7 +101,7 @@ async function initApp()
 
         localStorage.setItem('currentLevel', currLevel);
         localStorage.setItem('scoreTot', score);
-        game.init(config.gameLevels[currLevel]);
+        game.init(config.gameLevels[currLevel], resetScore);
         navigation.go(goTo);
     };
 
@@ -110,7 +110,7 @@ async function initApp()
   //      currLevel = window.localStorage.getItem('currentLevel');
   //      scoreTot = window.localStorage.getItem('scoreTot');
 
-        game.init(config.gameLevels[currLevel], resetScore);
+        game.init(config.gameLevels[currLevel]);
         navigation.go('game-over');
     }
     
