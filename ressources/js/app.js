@@ -174,8 +174,6 @@ async function initApp()
      *
      */
     let hallPage = new Page();
-
-
     hallPage.onBeforeShow = function(){
         
         document.getElementById('HallOfFameBodyTable').innerHTML = "";
@@ -311,6 +309,17 @@ async function initApp()
     $('.draggable').on('dragstart', function(ev){
         ev.originalEvent.dataTransfer.setData("text", ev.target.id);
     });
+
+
+
+    let tutorialPage = new Page();
+    tutorialPage.onShow = function(){
+        document.getElementById('tutorial-video').play();
+    };
+    tutorialPage.onBeforeHide = function(){
+        document.getElementById('tutorial-video').pause();
+    };
+    navigation.addPage('tutorial', tutorialPage);
 
 }
 
