@@ -67,7 +67,7 @@ async function initApp()
             hallOfFame.push({
                 nickName : localStorage.getItem('nickname'),
                 score : localStorage.getItem('scoreTot'),
-                date : date.toLocaleDateString() + "//" + date.toLocaleTimeString,
+                date : date.toLocaleDateString() + " - " + date.toLocaleTimeString(),
                 location : localStorage.getItem('location')
             });
 
@@ -171,12 +171,14 @@ async function initApp()
 
     hallPage.onBeforeShow = function(){
 
-        let tableau = document.getElementById("HallOfFameBodyTable");
-        let hallOfFame = localStorage.getItem('hallOfFame');
+        let tableau = document.getElementById('HallOfFameBodyTable');
+        let hallOfFame = JSON.parse(localStorage.getItem('hallOfFame'));
 
+        console.log(hallOfFame);
+        
         if (hallOfFame === null){
             let ligne = tableau.insertRow(-1);
-            ligne,innerHTML += "Never play, never there !";
+            ligne.innerHTML += "Never play, never there !";
         }
         else {
 
@@ -194,22 +196,20 @@ async function initApp()
                colonne1.innerHTML += hallOfFame[i].nickName;
                 
                let colonne2 = ligne.insertCell(1);
-               colonne2.innerHTML += hallOfFame[i].score;;
+               colonne2.innerHTML += hallOfFame[i].score;
 
-               let colonne3 = ligne.insertCell(1);
-               colonne2.innerHTML += hallOfFame[i].location;;
-
-               let colonne4 = ligne.insertCell(2);
+               let colonne3 = ligne.insertCell(2);
                colonne3.innerHTML += hallOfFame[i].date;
 
-               let colonne5 = ligne.insertCell(3);
+               let colonne4 = ligne.insertCell(3);
                colonne4.innerHTML += hallOfFame[i].location;
             }
 
         }
     };
 
-
+    navigation.addPage('hall-of-fame', hallPage);
+    
     
     let registrationPage = new Page();
     registrationPage.onInit = function(){
@@ -252,8 +252,8 @@ async function initApp()
         // Ok, formulaire valide
         // ...
     });
-
-
+   
+    
     $('#select-target-button').click(function(e){
         e.preventDefault();
 
