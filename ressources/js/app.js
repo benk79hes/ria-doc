@@ -10,18 +10,36 @@ async function initApp()
     
     let config = await configPromise;
 
-    let gameRegistrationStep = window.localStorage.getItem('registration');
-    if (gameRegistrationStep === null) {
-        gameRegistrationStep = 0;
-    } 
+
+    let registrationStep;
+
+    function getRegistrationStep() {
+        registrationStep = localStorage.getItem('registration');
+        if (registrationStep === null) {
+            registrationStep = 0;
+        } 
+
+        return registrationStep;
+    }
+    
+    function setRegistrationStep(v) {
+        localStorage.setItem('registration', v);
+    }
+    
+    // let gameRegistrationStep = localStorage.getItem('registration');
+    // if (gameRegistrationStep === null) {
+    //     gameRegistrationStep = 0;
+    // } 
+
+    // console.log(gameRegistrationStep);
 
 
-    let currLevel = window.localStorage.getItem('currentLevel');
+    let currLevel = localStorage.getItem('currentLevel');
     if (currLevel === null) {
         currLevel = 0;
     }
 
-    let scoreTot = window.localStorage.getItem('scoreTot');
+    let scoreTot = localStorage.getItem('scoreTot');
     if (scoreTot === null) {
         scoreTot = 0;
     }
@@ -34,43 +52,43 @@ async function initApp()
         currLevel++;
         
         if (currLevel >= config.gameLevels.length) {
+            let hallOfFameStored = localStorage.getItem('hallOfFame');
+            let hallOfFame;
 
-            addHallOfFame();
-           
-  //          window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
-
-   /*         if (hallOfFameStored !== null) {
+            date = new Date();
+    
+            if (hallOfFameStored === null) {                  
+                hallOfFame = [];
+            }
+            else {
                 hallOfFame = JSON.parse(hallOfFameStored);
             }
 
             hallOfFame.push({
-                nickname: '',
-                score: score
+                nickName : localStorage.getItem('nickname'),
+                score : localStorage.getItem('scoreTot'),
+                date : date.toLocaleDateString() + "//" + date.toLocaleTimeString,
+                location : localStorage.getItem('location')
             });
 
-            window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
-*/
-            window.localStorage.setItem('currentLevel', 0);
-            window.localStorage.setItem('scoreTot', 0);
+
+            localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
+            localStorage.setItem('currentLevel', 0);
+            localStorage.setItem('scoreTot', 0);
 
             game.init(config.gameLevels[0], true);
 
             navigation.go('winner');
         }
         else {
-            window.localStorage.setItem('currentLevel', currLevel);
-            window.localStorage.setItem('scoreTot', score);
+            localStorage.setItem('currentLevel', currLevel);
+            localStorage.setItem('scoreTot', score);
             game.init(config.gameLevels[currLevel]);
-            
-            addHallOfFame();
-
             navigation.go('score');
         }
     };
 
     game.onGameOver = function() {
-        addHallOfFame();
-        
         navigation.go('game-over');
     }
     
@@ -87,6 +105,8 @@ async function initApp()
 
     pageGame.onBeforeShow = function() {
 
+        let gameRegistrationStep = getRegistrationStep();
+
         if (gameRegistrationStep == 0) {
             navigation.go('register');
             return false;
@@ -98,12 +118,13 @@ async function initApp()
         }
 
         var imgProf = new Image();
-            
-        imgProf.src = 'images/teachers' + (~~(Math.random()*3)+1).toString + '.jpg';
+        
+        // todo async load
+        imgProf.src = 'images/teachers/1.jpg';
         
         imgProf.onload = function(){
             game.setTargetImage(imgProf);
-            ctx.drawImage(imgProf, apple.x * gridSize, apple.y * gridSize);
+            //ctx.drawImage(imgProf, apple.x * gridSize, apple.y * gridSize);
         }
 
         return true;
@@ -145,93 +166,49 @@ async function initApp()
      * Hall of Fame
      *
      */
-     $('#hall-of-fame').click(function(e){
-            e.preventDefault();
-
-         let tableau = document.getElementById("HallOfFameBodyTable");
-         let hallOfFame = window.localStorage.getItem('hallOfFame');
-
-         if (hallOfFame === null){
-             let ligne = tableau.insertRow(-1);
-             ligne,innerHTML += "Never play, never there !";
-         }
-         else {
-
-             hallOfFame.sort(function(a,b){
-                 return b.score - a.score;
-             });
-
-             hallOfFameLength = hallOfFame.length;
-             max = (hallOfFameLength > 10) ? 10 : hallOfFameLength;
-
-             for (i=0 ; i < max; i++){
-                let ligne = tableau.insertRow(-1);
-
-                let colonne1 = ligne.insertCell(0);
-                colonne1.innerHTML += hallOfFame[i].nickName;
-                 
-                let colonne2 = ligne.insertCell(1);
-                colonne2.innerHTML += hallOfFame[i].score;;
-
-                let colonne3 = ligne.insertCell(1);
-                colonne2.innerHTML += hallOfFame[i].location;;
-
-                let colonne4 = ligne.insertCell(2);
-                colonne3.innerHTML += hallOfFame[i].date;
-
-                let colonne5 = ligne.insertCell(3);
-                colonne4.innerHTML += hallOfFame[i].location;
-             }
-
-         }
-
-            navigation.go('hall-of-fame');        
-        }); 
-
-    function addHallOfFame () 
-    {    
-        let hallOfFameStored = window.localStorage.getItem('hallOfFame');
-
-                date = new Date();
-        
-                if (hallOfFameStored === null) {                  
-                    let hallOfFame = [];
-                    
-                       hallOfFame.push( {
-                            nickName : localStorage.getItem('nickname'),
-                            score : localStorage.getItem('scoreTot'),
-                            date : date.toLocaleDateString() + "//" + date.toLocaleTimeString(),
-                            location : localStorage.getItem('location')
-                        }
-                    );
-                    
-                    hallOfFame.forEach(fame => { 
-
-                        console.log(hallOfFame);
-
-                        for(element of fame) {
-                            if (element === null || element ==='undefined'){                                                       
-                                hallOfFame.splice(hallOfFame.findIndex(fame),1);
-                            }
-                        }
-                    });
-                }
-                else {
-                    hallOfFame = JSON.parse(hallOfFameStored);
- 
-                    hallOfFame.push({
-                        nickName : localStorage.getItem('nickname'),
-                        score : localStorage.getItem('scoreTot'),
-                        date : date.toLocaleDateString() + "//" + date.toLocaleTimeString,
-                        location : localStorage.getItem('location')
-                    }
-                    );
-                }
+    let hallPage = new Page();
 
 
-                localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
+    hallPage.onBeforeShow = function(){
 
-    }
+        let tableau = document.getElementById("HallOfFameBodyTable");
+        let hallOfFame = localStorage.getItem('hallOfFame');
+
+        if (hallOfFame === null){
+            let ligne = tableau.insertRow(-1);
+            ligne,innerHTML += "Never play, never there !";
+        }
+        else {
+
+            hallOfFame.sort(function(a,b){
+                return b.score - a.score;
+            });
+
+            hallOfFameLength = hallOfFame.length;
+            max = (hallOfFameLength > 10) ? 10 : hallOfFameLength;
+
+            for (i=0 ; i < max; i++){
+               let ligne = tableau.insertRow(-1);
+
+               let colonne1 = ligne.insertCell(0);
+               colonne1.innerHTML += hallOfFame[i].nickName;
+                
+               let colonne2 = ligne.insertCell(1);
+               colonne2.innerHTML += hallOfFame[i].score;;
+
+               let colonne3 = ligne.insertCell(1);
+               colonne2.innerHTML += hallOfFame[i].location;;
+
+               let colonne4 = ligne.insertCell(2);
+               colonne3.innerHTML += hallOfFame[i].date;
+
+               let colonne5 = ligne.insertCell(3);
+               colonne4.innerHTML += hallOfFame[i].location;
+            }
+
+        }
+    };
+
 
     
     let registrationPage = new Page();
@@ -267,10 +244,10 @@ async function initApp()
             return false;
         }
 
-        window.localStorage.setItem('nickname', nickname);
-        window.localStorage.setItem('location', location);
+        localStorage.setItem('nickname', nickname);
+        localStorage.setItem('location', location);
 
-        gameRegistrationStep = 1;
+        setRegistrationStep(1);
         navigation.go('choose-target');
         // Ok, formulaire valide
         // ...
@@ -291,9 +268,9 @@ async function initApp()
         // }
 
 
-        gameRegistrationStep = 2;
+        setRegistrationStep(2);
 
-        // window.localStorage.setItem('target', target);
+        // localStorage.setItem('target', target);
         navigation.go('game');
     });
 
