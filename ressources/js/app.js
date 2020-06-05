@@ -176,7 +176,7 @@ async function initApp()
     });
     
 
-    
+
     /**
      * Hall of Fame
      *
@@ -266,13 +266,13 @@ async function initApp()
             return false;
         }
 
+        // Ok, formulaire valide
+
         localStorage.setItem('nickname', nickname);
         localStorage.setItem('location', location);
 
         setRegistrationStep(1);
         navigation.go('choose-target');
-        // Ok, formulaire valide
-        // ...
     });
    
     
@@ -301,22 +301,18 @@ async function initApp()
     /**
      * Gestion du drag and drop
      */
-    $('#avatar-control').on('dragover dragenter', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        $(this).addClass('is-dragover');
+    $('.droppable').on('dragover', function(ev){
+        ev.preventDefault();
     });
 
-    $('#avatar-control').on('dragleave dragend drop', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        $(this).removeClass('is-dragover');
+    $('.droppable').on('drop', function(ev){
+        ev.preventDefault();
+        let data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
     });
 
-    $('#avatar-control').on('drop', function(e){
-        files = e.originalEvent.dataTransfer.files;
-        console.log(files);
-        document.getElementById('avatar-input').files = files;
+    $('.draggable').on('drag', function(ev){
+        ev.dataTransfer.setData("text", ev.target.id);
     });
 
 }
