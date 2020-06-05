@@ -119,11 +119,11 @@ video {
 
 #image-teacher-list {
     display:flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 #image-teacher-list .column {
-
+    margin: 0 20px;
 }
 
 
@@ -138,6 +138,7 @@ video {
     background-color: white;
     outline: 2px dashed black;
     outline-offset: -10px;
+    margin: 20px auto;
 }
 
 #placeForTarget.is-dragover {
