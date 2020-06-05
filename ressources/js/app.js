@@ -97,6 +97,15 @@ async function initApp()
             return false;
         }
 
+        var imgProf = new Image();
+            
+        imgProf.src = 'images/teachers' + (~~(Math.random()*3)+1).toString + '.jpg';
+        
+        imgProf.onload = function(){
+            game.setTargetImage(imgProf);
+            ctx.drawImage(imgProf, apple.x * gridSize, apple.y * gridSize);
+        }
+
         return true;
     };
     
