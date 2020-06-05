@@ -291,7 +291,7 @@ function Game(querySelector, options, scoreTot)
         }
 
        
-        if (timeout++ > addObstacleTimeout && opts.teacher > 0 ) {
+        if (timeout++ > opts.addObstacleTimeout && opts.teacher > 0 ) {
             timeout = 0 ;
             opts.teacher--;
             addApple(applesExtraTime);

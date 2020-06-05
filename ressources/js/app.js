@@ -32,14 +32,14 @@ async function initApp()
     
     game.onWin = function(score) {
         currLevel++;
-
-
+        
         if (currLevel >= config.gameLevels.length) {
 
             addHallOfFame();
+           
   //          window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
 
-            if (hallOfFameStored !== null) {
+   /*         if (hallOfFameStored !== null) {
                 hallOfFame = JSON.parse(hallOfFameStored);
             }
 
@@ -47,8 +47,9 @@ async function initApp()
                 nickname: '',
                 score: score
             });
-            window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
 
+            window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
+*/
             window.localStorage.setItem('currentLevel', 0);
             window.localStorage.setItem('scoreTot', 0);
 
@@ -60,6 +61,9 @@ async function initApp()
             window.localStorage.setItem('currentLevel', currLevel);
             window.localStorage.setItem('scoreTot', score);
             game.init(config.gameLevels[currLevel]);
+            
+            addHallOfFame();
+
             navigation.go('score');
         }
     };
@@ -156,14 +160,17 @@ async function initApp()
 
                 let colonne1 = ligne.insertCell(0);
                 colonne1.innerHTML += hallOfFame[i].nickName;
-
+                 
                 let colonne2 = ligne.insertCell(1);
+                colonne2.innerHTML += hallOfFame[i].score;;
+
+                let colonne3 = ligne.insertCell(1);
                 colonne2.innerHTML += hallOfFame[i].location;;
 
-                let colonne3 = ligne.insertCell(2);
+                let colonne4 = ligne.insertCell(2);
                 colonne3.innerHTML += hallOfFame[i].date;
 
-                let colonne4 = ligne.insertCell(3);
+                let colonne5 = ligne.insertCell(3);
                 colonne4.innerHTML += hallOfFame[i].location;
              }
 
@@ -177,16 +184,22 @@ async function initApp()
         let hallOfFameStored = window.localStorage.getItem('hallOfFame');
 
                 date = new Date();
-                if (hallOfFameStored === null) {
-                        let hallOfFame = [];
-                           hallOfFame.push( {
-                                nickName : windows.localStorage.setItem('nickName'),
-                                score : windows.localStorage.setItem('scoreTot'),
-                                date : date.toLocaleDateString() + "//" + date.toLocaleTimeString,
-                                location : windows.localStorage.setItem('location')
-                            },
-                        );
-                    hallOfFame.foreach(fame => { 
+        
+                if (hallOfFameStored === null) {                  
+                    let hallOfFame = [];
+                    
+                       hallOfFame.push( {
+                            nickName : localStorage.getItem('nickname'),
+                            score : localStorage.getItem('scoreTot'),
+                            date : date.toLocaleDateString() + "//" + date.toLocaleTimeString(),
+                            location : localStorage.getItem('location')
+                        }
+                    );
+                    
+                    hallOfFame.forEach(fame => { 
+
+                        console.log(hallOfFame);
+
                         for(element of fame) {
                             if (element === null || element ==='undefined'){                                                       
                                 hallOfFame.splice(hallOfFame.findIndex(fame),1);
@@ -198,16 +211,16 @@ async function initApp()
                     hallOfFame = JSON.parse(hallOfFameStored);
  
                     hallOfFame.push({
-                        nickName : windows.localStorage.setItem('nickName'),
-                        score : windows.localStorage.setItem('scoreTot'),
+                        nickName : localStorage.getItem('nickname'),
+                        score : localStorage.getItem('scoreTot'),
                         date : date.toLocaleDateString() + "//" + date.toLocaleTimeString,
-                        location : windows.localStorage.setItem('location')
+                        location : localStorage.getItem('location')
                     }
                     );
                 }
 
 
-                window.localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
+                localStorage.setItem('hallOfFame', JSON.stringify(hallOfFame));
 
     }
 
