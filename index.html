@@ -132,8 +132,7 @@
 			<header>
 				<h1>Hall of Fame</h1>
 			</header>
-			<p>List of top 10</p>
-            <table id="hallOFameTable">
+			<table id="hallOFameTable">
                 <tr>
                     <th>User</th>
                     <th>Score</th>
@@ -191,7 +190,7 @@
 			<p>
 				Following students where involved in the project for its development:
 			</p>
-			<ul>
+			<ul class="centered">
 				<li>Marina Spildenner</li>
 				<li>Matthieu Roux</li>
 				<li>Benjamin Keller</li>
@@ -215,10 +214,14 @@
 			
 			<form id="registration-form" class="content" method="post" action="" enctype="multipart/form-data">
 				<p class="label">Nickname</p>
-				<input type="text" name="nickname" placeholder="Choose your Nickname">
+				<p class="control">
+					<input type="text" name="nickname" placeholder="Choose your Nickname">
+				</p>
 
 				<p class="label">Location</p>
-				<input type="text" name="location" placeholder="Your location">
+				<p class="control">
+					<input type="text" name="location" placeholder="Your location">
+				</p>
 
 			</form>
            
@@ -255,9 +258,6 @@
             
 			<nav>
 				<ul>
-					<li>
-						<a href="#" id="select-target-button" class="main-button">continue</a>
-					</li>
 					<li>
 						<a href="#home">Home</a>
 					</li>

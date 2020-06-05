@@ -292,7 +292,6 @@ async function initApp()
         console.log(data);
         console.log(iconName);
         
-        // todo async load
         imgProf.src = 'ressources/img/teachers/' + iconName +'_icon.jpg';
         
         let loaded = false;

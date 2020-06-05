@@ -22,12 +22,14 @@ body {
     margin: 0;
     display: flex;
     overscroll-behavior-y: contain;
+    justify-content: center;
 }
 
 section.page {
     display: flex;
     flex-grow: 1;
     flex-direction: column;
+    max-width: 600px;
 }
 
 
@@ -49,7 +51,7 @@ h1 {
 
 p,
 .content {
-    width: 60%;
+    width: 80%;
     margin: 0 auto 2em auto
 }
 
@@ -117,6 +119,24 @@ video {
     display: inline-block;
 }
 
+
+ul.centered {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+p.label {
+    margin-bottom: 0.5em;
+}
+
+.control input {
+    display: block;
+    width: 100%;
+}
+
+#hallOFameTable tr {
+    text-align: left;
+}
 #image-teacher-list {
     display:flex;
     justify-content: center;
