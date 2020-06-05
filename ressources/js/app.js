@@ -89,6 +89,11 @@ async function initApp()
     };
 
     game.onGameOver = function() {
+        
+  //      currLevel = window.localStorage.getItem('currentLevel');
+  //      scoreTot = window.localStorage.getItem('scoreTot');
+
+        game.init(config.gameLevels[currLevel]);
         navigation.go('game-over');
     }
     
@@ -170,15 +175,20 @@ async function initApp()
 
 
     hallPage.onBeforeShow = function(){
+        
+        document.getElementById('HallOfFameBodyTable').innerHTML = "";
 
         let tableau = document.getElementById('HallOfFameBodyTable');
         let hallOfFame = JSON.parse(localStorage.getItem('hallOfFame'));
 
+        
         console.log(hallOfFame);
         
         if (hallOfFame === null){
             let ligne = tableau.insertRow(-1);
-            ligne.innerHTML += "Never play, never there !";
+            let cell = ligne.insertCell(0);
+            cell.colSpan = 4;
+            cell.innerHTML = "Never play, never there !";
         }
         else {
 
@@ -186,10 +196,10 @@ async function initApp()
                 return b.score - a.score;
             });
 
-            hallOfFameLength = hallOfFame.length;
-            max = (hallOfFameLength > 10) ? 10 : hallOfFameLength;
+            let hallOfFameLength = hallOfFame.length;
+            let max = (hallOfFameLength > 10) ? 10 : hallOfFameLength;
 
-            for (i=0 ; i < max; i++){
+            for (let i=0 ; i < max; i++){
                let ligne = tableau.insertRow(-1);
 
                let colonne1 = ligne.insertCell(0);
