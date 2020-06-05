@@ -53,6 +53,7 @@ function Game(querySelector, options, scoreTot)
     let scoreLevel = 0;
     let noEatenApple;
     let applesBonus = 0;
+    let imgProf = null;
 
     let backToWork = false;
 
@@ -198,7 +199,10 @@ function Game(querySelector, options, scoreTot)
         }, opts.intervalTime);
 
     };
-    
+
+    this.setTargetImage = function(img) {
+        imgProf = img;
+    };
     
     this.run = function() {     
         
@@ -407,13 +411,13 @@ console.log(timeout);
         applesExtraTime.forEach(apple => {
             ctx.beginPath();
     //        ctx.fillStyle="blue";
-            var imgProf = new Image();
+            // var imgProf = new Image();
             
-            imgProf.src = 'Images/' + (~~(Math.random()*3)+1).toString + '.jpg';
+            // imgProf.src = 'Images/' + (~~(Math.random()*3)+1).toString + '.jpg';
             
-            imgProf.onload = function(){
+            // imgProf.onload = function(){
                 ctx.drawImage(imgProf, apple.x * gridSize, apple.y * gridSize);
-            }
+            // }
             
 //            ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
             ctx.closePath();
