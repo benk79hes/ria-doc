@@ -186,22 +186,23 @@ async function initApp()
                                 location : windows.localStorage.setItem('location')
                             },
                         );
-                    hallOfFame.foreach(let fame => 
+                    hallOfFame.foreach(fame => { 
                         for(element of fame) {
-                            if (element === null | element ==='undefined'){                                                       
+                            if (element === null || element ==='undefined'){                                                       
                                 hallOfFame.splice(hallOfFame.findIndex(fame),1);
                             }
                         }
-                    );
+                    });
                 }
                 else {
                     hallOfFame = JSON.parse(hallOfFameStored);
  
-                    hallOfFame.push(
+                    hallOfFame.push({
                         nickName : windows.localStorage.setItem('nickName'),
                         score : windows.localStorage.setItem('scoreTot'),
                         date : date.toLocaleDateString() + "//" + date.toLocaleTimeString,
                         location : windows.localStorage.setItem('location')
+                    }
                     );
                 }
 
