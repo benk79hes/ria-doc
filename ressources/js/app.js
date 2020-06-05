@@ -139,14 +139,6 @@ async function initApp()
             return false;
         }
 
-        var imgProf = new Image();
-        
-        // todo async load
-        imgProf.src = 'images/teachers/1.jpg';
-        
-        imgProf.onload = function(){
-            game.setTargetImage(imgProf);
-        }
 
         return true;
     };
@@ -307,12 +299,35 @@ async function initApp()
 
     $('.droppable').on('drop', function(ev){
         ev.preventDefault();
-        let data = ev.dataTransfer.getData("text");
+        
+        let data = ev.originalEvent.dataTransfer.getData("text");
+
         ev.target.appendChild(document.getElementById(data));
+
+        setRegistrationStep(2);
+
+        var imgProf = new Image();
+        let iconName = $('#' + data).data('icon');
+        console.log(data);
+        console.log(iconName);
+        
+        // todo async load
+        imgProf.src = 'ressources/img/teachers/' + iconName +'_icon.jpg';
+        
+        let loaded = false;
+
+        imgProf.onload = function(){
+            loaded = true;
+            game.setTargetImage(imgProf);
+            console.log(imgProf);
+            console.log(game);
+            navigation.go('game');
+        }
     });
 
-    $('.draggable').on('drag', function(ev){
-        ev.dataTransfer.setData("text", ev.target.id);
+    $('.draggable').on('dragstart', function(ev){
+        // console.log(ev);
+        ev.originalEvent.dataTransfer.setData("text", ev.target.id);
     });
 
 }

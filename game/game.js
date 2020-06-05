@@ -53,7 +53,6 @@ function Game(querySelector, options, scoreTot)
     let scoreLevel = 0;
     let noEatenApple;
     let applesBonus = 0;
-    let imgProf = null;
 
     let backToWork = false;
 
@@ -62,6 +61,7 @@ function Game(querySelector, options, scoreTot)
     _self.gameGridWidth = canvas.width / gridSize;
     _self.gameGridHeight = canvas.height / gridSize;
     _self.snake = null;
+    _self.imgProf = null;
 
     scoreTot = scoreTot || 0;
 
@@ -203,7 +203,7 @@ function Game(querySelector, options, scoreTot)
     };
 
     this.setTargetImage = function(img) {
-        imgProf = img;
+        _self.imgProf = img;
     };
     
     this.run = function() {     
@@ -284,6 +284,12 @@ function Game(querySelector, options, scoreTot)
                 eating = true;
                 scoreLevel+=5;
                 applesBonus++;
+                if (eatSoundFlag) {               //!!!!!!!!MUSIC IS HERE
+                    eatSound.pause();
+                    eatSound.currentTime = 0;
+                    eatSound.play();
+                    eatSoundFlag=false;         
+                }
                 return false;
             }
 
@@ -297,12 +303,12 @@ function Game(querySelector, options, scoreTot)
         }
 
        
-        if (timeout++ > opts.addObstacleTimeout && opts.teacher > 0 ) {
+        if (timeout++ > opts.addObstacleTimeout && opts.obstacles.teacher > 0 ) {
             timeout = 0 ;
-            opts.teacher--;
+            opts.obstacles.teacher--;
             addApple(applesExtraTime);
         }
-console.log(timeout);
+
         return true;
     };
 
@@ -418,7 +424,7 @@ console.log(timeout);
             // imgProf.src = 'Images/' + (~~(Math.random()*3)+1).toString + '.jpg';
             
             // imgProf.onload = function(){
-                ctx.drawImage(imgProf, apple.x * gridSize, apple.y * gridSize);
+            ctx.drawImage(_self.imgProf, apple.x * gridSize, apple.y * gridSize);
             // }
             
 //            ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
