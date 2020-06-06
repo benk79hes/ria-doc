@@ -2,16 +2,16 @@
     "gameLevels" : [
         {
             "levelName": "First level",
-            "intervalTime":  300,
+            "intervalTime":  200,
             "addObstacleTimeout": 20,
             "obstacles": {
-                "apple": 4,
+                "apple": 1,
                 "teacher": 3
             }
         },
         {
             "levelName": "Second level",
-            "intervalTime":  280,
+            "intervalTime":  150,
             "addObstacleTimeout": 5,
             "obstacles": {
                 "apple": 2,
