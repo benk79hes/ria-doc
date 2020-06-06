@@ -13,7 +13,7 @@ async function initApp()
 
     let registrationStep;
 
-    function getRegistrationStep() {
+    getRegistrationStep = function() {
         registrationStep = localStorage.getItem('registration');
         if (registrationStep === null) {
             registrationStep = 0;
@@ -22,7 +22,7 @@ async function initApp()
         return registrationStep;
     }
     
-    function setRegistrationStep(v) {
+    setRegistrationStep = function (v) {
         localStorage.setItem('registration', v);
     }
     
